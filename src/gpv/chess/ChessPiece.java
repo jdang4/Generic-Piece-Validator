@@ -71,9 +71,9 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean insideBoard(Coordinate coord, Board b)
 	{
-		if (coord.getRow() >= 0 && coord.getRow() < b.nRows) 
+		if (coord.getRow() > 0 && coord.getRow() <= b.nRows) 
 		{
-			if (coord.getColumn() >= 0 && coord.getColumn() < b.nRows)
+			if (coord.getColumn() > 0 && coord.getColumn() <= b.nRows)
 			{
 				return true;
 			}
@@ -102,9 +102,9 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		 * 		not valid if that certain piece cannot make that movement
 		 */
 		
-		// checking if valid from
-		if (!insideBoard(from, b) || !insideBoard(to, b)) {
-			// maybe want to throw an exception
+		// checking if where I want to move is a valid position within the board
+		if (!insideBoard(to, b)) {
+
 			return false;
 		}
 		
@@ -118,40 +118,37 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		
 		boolean result = false;
 		
-		if (movingPieceType == PieceName.KING)
+		switch(movingPieceType)
 		{
-			
+			case KING :
+				// move for king
+				break;
+				
+			case QUEEN :
+				// move for queen
+				break;
+				
+			case BISHOP :
+				// move for bishop
+				break;
+				
+			case KNIGHT :
+				// move for knight
+				break;
+				
+			case ROOK :
+				// move for rook
+				break;
+				
+			case PAWN :
+				// move for pawn
+				break;
+				
+			default :
+				// idk how it would get to here 
+				break;
 		}
 		
-		else if (movingPieceType == PieceName.QUEEN)
-		{
-			
-		}
-		
-		else if (movingPieceType == PieceName.BISHOP)
-		{
-			
-		}
-		
-		else if (movingPieceType == PieceName.KNIGHT)
-		{
-			
-		}
-		
-		else if (movingPieceType == PieceName.ROOK)
-		{
-			
-		}
-		
-		else if (movingPieceType == PieceName.PAWN)
-		{
-			
-		}
-		
-		else 
-		{
-			// not a valid piece type
-		}
 		
 		return result;
 	}
