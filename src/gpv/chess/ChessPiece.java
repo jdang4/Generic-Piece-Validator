@@ -82,7 +82,119 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		
 		return false;
 	}
-
+	
+	/*
+	 * TODO
+	 * write the lambda functions of the movement of these pieces
+	 */
+	
+	// can move one space at a time in any direction
+	private ChessPieceValidator king = (from, to, b) ->
+	{
+		if ( (Math.abs(to.getRow() - from.getRow()) > 1) ||
+				(Math.abs(to.getColumn() - from.getColumn()) > 1) )
+		{
+			return false;
+		}
+		
+		boolean verticalMove = canMoveVertically(from, to, b);
+		boolean horizontalMove = canMoveHorizontally(from, to, b);
+		boolean diagonalMove = canMoveDiagonally(from, to, b);
+		
+		return (verticalMove || horizontalMove || diagonalMove);
+	};
+	
+	// can move in any direction as far as it can without jumping over any pieces
+	private ChessPieceValidator queen = (from, to, b) ->
+	{
+		boolean verticalMove = canMoveVertically(from, to, b);
+		boolean horizontalMove = canMoveHorizontally(from, to, b);
+		boolean diagonalMove = canMoveDiagonally(from, to, b);
+		
+		return (verticalMove || horizontalMove || diagonalMove);
+	};
+	
+	private ChessPieceValidator bishop;
+	
+	private ChessPieceValidator knight;
+	
+	private ChessPieceValidator rook = (from, to, b) ->
+	{
+		boolean verticalMove = canMoveVertically(from, to, b);
+		boolean horizontalMove = canMoveHorizontally(from, to, b);
+		
+		return (verticalMove || horizontalMove);
+	};
+	
+	private ChessPieceValidator pawn;
+	
+	
+	private boolean canMoveVertically_Up(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveVertically_Down(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveVertically(Coordinate from, Coordinate to, Board b)
+	{
+		return (canMoveVertically_Up(from, to, b) || canMoveVertically_Down(from, to, b));
+	}
+	
+	private boolean canMoveHorizontally_Right(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveHorizontally_Left(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveHorizontally(Coordinate from, Coordinate to, Board b)
+	{
+		return (canMoveHorizontally_Right(from, to, b) || canMoveHorizontally_Left(from, to, b));
+	}
+	
+	private boolean canMoveDiagonally_UpRight(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveDigonally_UpLeft(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveDiagonally_Up(Coordinate from, Coordinate to, Board b)
+	{
+		return (canMoveDiagonally_UpRight(from, to, b) || canMoveDigonally_UpLeft(from, to, b));
+	}
+	
+	private boolean canMoveDiagonally_DownRight(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveDiagonally_DownLeft(Coordinate from, Coordinate to, Board b)
+	{
+		return false;
+	}
+	
+	private boolean canMoveDiagonally_Down(Coordinate from, Coordinate to, Board b)
+	{
+		return (canMoveDiagonally_DownRight(from, to, b) || canMoveDiagonally_DownLeft(from, to, b));
+	}
+	
+	private boolean canMoveDiagonally(Coordinate from, Coordinate to, Board b) 
+	{
+		return (canMoveDiagonally_Up(from, to, b) || canMoveDiagonally_Down(from, to, b));
+	}
+	
+	
 	/*
 	 * @see gpv.Piece#canMove(gpv.util.Coordinate, gpv.util.Coordinate, gpv.util.Board)
 	 * IMPLEMENT HERE
@@ -103,13 +215,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		 */
 		
 		// checking if where I want to move is a valid position within the board
-		if (!insideBoard(to, b)) {
-
-			return false;
-		}
-		
-		// check that i am actually moving (from != to)
-		if (from.equals(to))
+		if ( (!insideBoard(to, b)) || (from.equals(to)) ) 
 		{
 			return false;
 		}
@@ -121,11 +227,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		switch(movingPieceType)
 		{
 			case KING :
-				// move for king
+				result = king.check(from, to, b);
 				break;
 				
 			case QUEEN :
-				// move for queen
+				result = queen.check(from, to, b);
 				break;
 				
 			case BISHOP :
@@ -137,7 +243,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				break;
 				
 			case ROOK :
-				// move for rook
+				result = rook.check(from, to, b);
 				break;
 				
 			case PAWN :
