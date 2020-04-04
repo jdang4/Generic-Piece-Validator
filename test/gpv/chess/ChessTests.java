@@ -106,5 +106,15 @@ class ChessTests
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2, 5), board));
 	}
+	
+	@Test
+	void moveKing()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece bq = factory.makePiece(BLACKQUEEN);
+		board.putPieceAt(bq, makeCoordinate(1,1));
+		board.putPieceAt(wk, makeCoordinate(2,1));
+		assertTrue(wk.canMove(makeCoordinate(2,1), makeCoordinate(1,1), board));
+	}
 
 }

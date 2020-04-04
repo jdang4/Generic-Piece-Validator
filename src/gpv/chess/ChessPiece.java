@@ -128,20 +128,139 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	
 	private ChessPieceValidator pawn;
 	
-	
+	/**
+	 * This method is called when the piece wants to move upwards in a vertical direction. It determines
+	 * if the piece can move vertically up to the desired coordinate while following the rules of chess
+	 * @param from - the source coordinate that the piece is moving from
+	 * @param to - the destination coordinate that the piece is moving to
+	 * @param b - signfies the board that the piece is moving on
+	 * @return whether the piece can move vertically upwards to the desired coordinate
+	 * 			true -> it is a valid move for moving vertically upwards, false -> it is not a valid move
+	 */
 	private boolean canMoveVertically_Up(Coordinate from, Coordinate to, Board b)
 	{
+		if (from.getRow() < to.getRow()) 
+		{
+			PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+			
+			for (int nextRow = from.getRow() + 1; nextRow <= to.getRow(); nextRow++)
+			{
+				Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
+				// check if there is a piece in the way (no jumping over)
+				if (b.getPieceAt(nextCoordinate) == null)
+				{
+					// got to the desired location and there is no piece at the coordinate
+					if (nextRow == to.getRow())
+					{
+						return true;
+					}
+						
+				}
+				// there is a piece in the way
+				else 
+				{
+					// check if next move will be the desired location and see if I can remove an opponent piece
+					if (nextRow == to.getRow())
+					{
+						PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
+						// found an oponent piece at the desired location
+						
+						if (!movingPieceColor.equals(nextPieceColor))
+						{
+							return true;
+						}
+					}
+						
+					else
+					{
+						return false;
+					}
+				}	
+			}
+		}
 		return false;
 	}
 	
+	/**
+	 * This method is called when the piece wants to move downwards in a vertical direction. It determines
+	 * if the piece can move vertically down to the desired coordinate while following the rules of chess
+	 * @param from - the source coordinate that the piece is moving from
+	 * @param to - the destination coordinate that the piece is moving to
+	 * @param b - signfies the board that the piece is moving on
+	 * @return whether the piece can move vertically downwards to the desired coordinate
+	 * 			true -> it is a valid move for moving vertically downwords, false -> it is not a valid move
+	 */
 	private boolean canMoveVertically_Down(Coordinate from, Coordinate to, Board b)
 	{
+		if (from.getRow() > to.getRow()) 
+		{
+			PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+			for (int nextRow = from.getRow() - 1; nextRow >= to.getRow(); nextRow--)
+			{
+				Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
+				// check if there is a piece in the way (no jumping over)
+				if (b.getPieceAt(nextCoordinate) == null)
+				{
+					// got to the desired location and there is no piece at the coordinate
+					if (nextRow == to.getRow())
+					{
+						return true;
+					}		
+				}
+				
+				// there is a piece in the way
+				else 
+				{
+					// check if next move will be the desired location and see if I can remove an opponent piece
+					if (nextRow == to.getRow())
+					{
+						PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
+						
+						// found an oponent piece at the desired location
+						if (!movingPieceColor.equals(nextPieceColor))
+						{
+							return true;
+						}
+					}
+					
+					else
+					{
+						return false;
+					}
+				}	
+			}
+		}
+		
 		return false;
 	}
 	
+	/**
+	 * This method is called when trying to verify if the particular piece can move vertically while
+	 * following the rules of chess
+	 * @param from - the source coordinate that the piece is moving from
+	 * @param to - the destination coordinate that the piece is moving to
+	 * @param b - signfies the board that the piece is moving on
+	 * @return whether the piece can move vertically to the desired coordinate:
+	 * 			true -> it is a valid move, false -> it is not a valid move
+	 */
 	private boolean canMoveVertically(Coordinate from, Coordinate to, Board b)
 	{
-		return (canMoveVertically_Up(from, to, b) || canMoveVertically_Down(from, to, b));
+		if (from.getColumn() == to.getColumn())
+		{
+			// check to see if it can move vertically upwards
+			if (from.getRow() < to.getRow())
+			{
+				return canMoveVertically_Up(from, to, b);
+			}
+			
+			// check to see if it can move vertically downwards
+			else
+			{
+				return canMoveVertically_Down(from, to, b);
+			}
+		}
+		
+		return false;
 	}
 	
 	private boolean canMoveHorizontally_Right(Coordinate from, Coordinate to, Board b)
@@ -184,11 +303,32 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	}
 	
+	/**
+	 * This method is called to verify if the piece can move diagonally down. If the piece
+	 * is able to move diagonally down in either the right or left directions, then the piece
+	 * is able to move diagonally down to the destination coordinate sucessfully - is a valid move
+	 * @param from - the source coordinate that the piece is moving from
+	 * @param to - the destination coordinate that the piece is moving to
+	 * @param b - signfies the board that the piece is moving on
+	 * @return whether the piece is able to move diagonally down:
+	 * 			true -> piece can move diagonally down, false -> piece cannot move diagonally down
+	 */
 	private boolean canMoveDiagonally_Down(Coordinate from, Coordinate to, Board b)
 	{
 		return (canMoveDiagonally_DownRight(from, to, b) || canMoveDiagonally_DownLeft(from, to, b));
 	}
 	
+	/**
+	 * This method is called to verify if the piece can move diagonally. If the piece is 
+	 * able to move diagonally in either the upwards direction or the downwards direction, then
+	 * the piece is able to move diagonally to the destination coordinate successfully - it is a 
+	 * valid move.
+	 * @param from - the source coordinate that the piece is moving from
+	 * @param to - the destination coordinate that the piece is moving to
+	 * @param b - signfies the board that the piece is moving on
+	 * @return whether the piece is able to move diagionally: 
+	 * 			true -> piece can move diagonally, false -> piece cannot move diagonally
+	 */
 	private boolean canMoveDiagonally(Coordinate from, Coordinate to, Board b) 
 	{
 		return (canMoveDiagonally_Up(from, to, b) || canMoveDiagonally_Down(from, to, b));
