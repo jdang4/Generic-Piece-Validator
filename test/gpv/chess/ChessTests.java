@@ -120,9 +120,9 @@ class ChessTests
 	@Test // 2
 	void columnCoordinateOfDestinationNotinBoard()
 	{
-		ChessPiece wk = factory.makePiece(WHITEKING);
-		board.putPieceAt(wk, makeCoordinate(1,8));
-		assertFalse(wk.canMove(makeCoordinate(1,8), makeCoordinate(1,9), board));
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(1,8));
+		assertFalse(wb.canMove(makeCoordinate(1,8), makeCoordinate(1,9), board));
 	}
 	
 	@Test // 3
@@ -134,59 +134,11 @@ class ChessTests
 	}
 	
 	@Test
-	void testPawn1()
+	void pieceMovingFromAWrongLocation()
 	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		board.putPieceAt(wp, makeCoordinate(2,5));
-		assertTrue(wp.canMove(makeCoordinate(2,5), makeCoordinate(3,5), board));
-	}
-	
-	@Test
-	void testPawn2()
-	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		board.putPieceAt(wp, makeCoordinate(2,5));
-		assertTrue(wp.canMove(makeCoordinate(2,5), makeCoordinate(4,5), board));
-	}
-	
-	@Test
-	void testPawn3()
-	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		board.putPieceAt(wp, makeCoordinate(2,5));
-		wp.setHasMoved();
-		System.out.println(wp.hasMoved());
-		assertFalse(wp.canMove(makeCoordinate(2,5), makeCoordinate(4,5), board));
-	}
-	
-	@Test
-	void testPawn4()
-	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		ChessPiece bp = factory.makePiece(BLACKPAWN);
-		board.putPieceAt(wp, makeCoordinate(3,5));
-		board.putPieceAt(bp, makeCoordinate(4,5));
-		assertFalse(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,5), board));
-	}
-	
-	@Test
-	void testPawn5()
-	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		ChessPiece bp = factory.makePiece(BLACKPAWN);
-		board.putPieceAt(wp, makeCoordinate(3,5));
-		board.putPieceAt(bp, makeCoordinate(4,6));
-		assertTrue(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,6), board));
-	}
-	
-	@Test
-	void testPawn6()
-	{
-		ChessPiece wp = factory.makePiece(WHITEPAWN);
-		ChessPiece bp = factory.makePiece(BLACKPAWN);
-		board.putPieceAt(wp, makeCoordinate(3,5));
-		board.putPieceAt(bp, makeCoordinate(4,4));
-		assertTrue(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,4), board));
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		assertFalse(wk.canMove(makeCoordinate(5,5), makeCoordinate(6,5), board));
 	}
 	
 ///////////////////////////// Test Cases for King Piece ////////////////////////////////////////
@@ -211,6 +163,7 @@ class ChessTests
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,5), board));
 	}
 	
@@ -251,6 +204,7 @@ class ChessTests
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,6), board));
 	}
 	
@@ -259,6 +213,7 @@ class ChessTests
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,4), board));
 	}
 	
@@ -268,7 +223,9 @@ class ChessTests
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		board.putPieceAt(bk, makeCoordinate(1,5));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,5), board));
 	}
 	
@@ -279,6 +236,7 @@ class ChessTests
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(bk, makeCoordinate(2,5));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,5), board));
 	}
 	
@@ -289,6 +247,7 @@ class ChessTests
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(bk, makeCoordinate(1,6));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,6), board));
 	}
 	
@@ -299,6 +258,7 @@ class ChessTests
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(bk, makeCoordinate(1,4));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,4), board));
 	}
 	
@@ -309,6 +269,7 @@ class ChessTests
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(bk, makeCoordinate(2,6));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,6), board));
 	}
 	
@@ -319,6 +280,7 @@ class ChessTests
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(bk, makeCoordinate(2,4));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,4), board));
 	}
 	
@@ -328,7 +290,9 @@ class ChessTests
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		board.putPieceAt(bk, makeCoordinate(1,6));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,6), board));
 	}
 	
@@ -338,7 +302,9 @@ class ChessTests
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
 		board.putPieceAt(bk, makeCoordinate(1,4));
+		bk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,4), board));
 	}
 	
@@ -346,29 +312,31 @@ class ChessTests
 	void kingMovesVerticallyDown_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wb = factory.makePiece(WHITEBISHOP);
-		board.putPieceAt(wk, makeCoordinate(2,5));
-		board.putPieceAt(wb, makeCoordinate(1,5));
-		assertFalse(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,5), board));
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(2,1));
+		wk.setHasMoved();
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertFalse(wk.canMove(makeCoordinate(2,1), makeCoordinate(1,1), board));
 	}
 	
 	@Test // 6
 	void kingMovesVerticallyUp_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wb = factory.makePiece(WHITEBISHOP);
-		board.putPieceAt(wk, makeCoordinate(1,5));
-		board.putPieceAt(wb, makeCoordinate(2,5));
-		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,5), board));
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,1));
+		board.putPieceAt(wr, makeCoordinate(2,1));
+		wr.setHasMoved();
+		assertFalse(wk.canMove(makeCoordinate(1,1), makeCoordinate(2,1), board));
 	}
 	
 	@Test // 6
 	void kingMovesHorizontallyRight_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		board.putPieceAt(wk, makeCoordinate(1,5));
-		board.putPieceAt(wq, makeCoordinate(1,6));
+		board.putPieceAt(wb, makeCoordinate(1,6));
 		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,6), board));
 	}
 	
@@ -386,9 +354,9 @@ class ChessTests
 	void kingMovesDiagonallyUpRight_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
 		board.putPieceAt(wk, makeCoordinate(1,5));
-		board.putPieceAt(wq, makeCoordinate(2,6));
+		board.putPieceAt(wp, makeCoordinate(2,6));
 		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,6), board));
 	}
 	
@@ -396,9 +364,9 @@ class ChessTests
 	void kingMovesDiagonallyUpLeft_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
 		board.putPieceAt(wk, makeCoordinate(1,5));
-		board.putPieceAt(wq, makeCoordinate(2,4));
+		board.putPieceAt(wp, makeCoordinate(2,4));
 		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,4), board));
 	}
 	
@@ -406,13 +374,608 @@ class ChessTests
 	void kingMovesDiagonallyDownRight_SameColorAtDestination()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
-		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		board.putPieceAt(wk, makeCoordinate(2,5));
-		board.putPieceAt(wq, makeCoordinate(1,6));
+		wk.setHasMoved();
+		board.putPieceAt(wb, makeCoordinate(1,6));
 		assertFalse(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,6), board));
 	}
 	
+	@Test 
+	void kingMovesDiagonallyDownLeft_SameColorAtDestination()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wk, makeCoordinate(2,5));
+		wk.setHasMoved();
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertFalse(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,4), board));
+	}
 	
+	@Test
+	void kingMakesValidRightCastlingMove()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,7), board));
+	}
 	
+	@Test
+	void kingMovedAndAttemptsRightCastling()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		wk.setHasMoved();
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,7), board));
+	}
+	
+	@Test
+	void kingAttemptsRightCastlingWithMovedRook()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		wr.setHasMoved();
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,7), board));
+	}
+	
+	@Test 
+	void kingAttemptsRightCastlingWithPiecesInBetween()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		board.putPieceAt(wkn, makeCoordinate(1, 7));
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,7), board));
+	}
+	
+	@Test
+	void kingMakesValidLeftCastlingMove()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,3), board));
+	}
+	
+	@Test
+	void kingMovedAndAttemptsLeftCastling()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		wk.setHasMoved();
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,3), board));
+	}
+	
+	@Test
+	void kingAttemptsLeftCastlingWithMovedRook()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		wr.setHasMoved();
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,3), board));
+	}
+	
+	@Test 
+	void kingAttemptsLeftCastlingWithPiecesInBetween()
+	{
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		board.putPieceAt(wb, makeCoordinate(1, 3));
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,3), board));
+	}
+	
+//////////////////////// Test Cases for Queen ////////////////////////////////////////////////
+	
+	@Test
+	void queenMovesUpOneSpace_Empty()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(2,4), board));
+	}
+	
+	@Test
+	void queenMovesUpTwoSpace_Empty()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,4), board));
+	}
+	
+	@Test
+	void queenMovesRightThreeSpaces_Empty()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(1,7), board));
+	}
+	
+	@Test 
+	void queenMovesDiagonallyUpRight_Empty()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,6), board));
+	}
+	
+	@Test
+	void queenMakesInvalidMove_Empty()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,5), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_VerticallyUp()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wp, makeCoordinate(2,4));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,4), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_VerticallyDown()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(3,4));
+		wq.setHasMoved();
+		board.putPieceAt(wp, makeCoordinate(2,4));
+		assertFalse(wq.canMove(makeCoordinate(3,4), makeCoordinate(1,4), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_HorizontalRight()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wb, makeCoordinate(1,6));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(1,7), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_HorizontalLeft()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wb, makeCoordinate(1,3));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(1,2), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_DiagonallyUpRight()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wp, makeCoordinate(2,5));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,6), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_DiagonallyUpLeft()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wp, makeCoordinate(2,3));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,2), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_DiagonallyDownRight()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(3,2));
+		wq.setHasMoved();
+		board.putPieceAt(wp, makeCoordinate(2,3));
+		assertFalse(wq.canMove(makeCoordinate(3,2), makeCoordinate(1,4), board));
+	}
+	
+	@Test
+	void queenAttemptsToJumpOverPiece_DiagonallyDownLeft()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(3,6));
+		wq.setHasMoved();
+		board.putPieceAt(wp, makeCoordinate(2,5));
+		assertFalse(wq.canMove(makeCoordinate(3,6), makeCoordinate(1,4), board));
+	}
+	
+	@Test
+	void queenMovesVertically_OpponentAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(bp, makeCoordinate(2,4));
+		bp.setHasMoved();
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(2,4), board));
+	}
+	
+	@Test
+	void queenMovesHorizontally_OpponentAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(bp, makeCoordinate(1,3));
+		bp.setHasMoved();
+		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(1,3), board));
+	}
+	
+	@Test
+	void queenMovesDiagonally_OpponentAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wq, makeCoordinate(3,4));
+		wq.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(1,2));
+		bp.setHasMoved();
+		assertTrue(wq.canMove(makeCoordinate(3,4), makeCoordinate(1,2), board));
+	}
+	
+	@Test
+	void queenMovesVertically_SameColorAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wp, makeCoordinate(2,4));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(2,4), board));
+	}
+	
+	@Test
+	void queenMovesHorizontally_SameColorAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		board.putPieceAt(wq, makeCoordinate(1,4));
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		assertFalse(wq.canMove(makeCoordinate(1,4), makeCoordinate(1,5), board));
+	}
+	
+	@Test
+	void queenMovesDiagonally_SameColorAtDestination()
+	{
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		ChessPiece wp = factory.makePiece(WHITEKING);
+		board.putPieceAt(wq, makeCoordinate(4,7));
+		board.putPieceAt(wp, makeCoordinate(2,5));
+		assertFalse(wq.canMove(makeCoordinate(4,7), makeCoordinate(2,5), board));
+	}
 
+////////////////////////Test Cases for Bishop ////////////////////////////////////////////////
+	
+	@Test
+	void bishopMovesDiagonallyUpRight_Empty()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(1, 3));
+		assertTrue(wb.canMove(makeCoordinate(1, 3), makeCoordinate(3, 5), board));
+	}
+	
+	@Test
+	void bishopMovesDiagonallyUpLeft_Empty()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(1, 6));
+		assertTrue(wb.canMove(makeCoordinate(1, 6), makeCoordinate(4, 3), board));
+	}
+	
+	@Test
+	void bishopMovesDiagonallyDownRight_Empty()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(4, 3));
+		wb.setHasMoved();
+		assertTrue(wb.canMove(makeCoordinate(4, 3), makeCoordinate(1, 6), board));
+	}
+	
+	@Test
+	void bishopMovesDiagonallyDownLeft_Empty()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(3, 5));
+		wb.setHasMoved();
+		assertTrue(wb.canMove(makeCoordinate(3, 5), makeCoordinate(1, 3), board));
+	}
+	
+	@Test
+	void bishopMovesInNonDiagonalDirection_Empty()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		board.putPieceAt(wb, makeCoordinate(1, 6));
+		assertFalse(wb.canMove(makeCoordinate(1, 6), makeCoordinate(2, 6), board));
+	}
+	
+	@Test
+	void bishopAttempsToJumpOverPiece()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wb, makeCoordinate(1, 3));
+		board.putPieceAt(wb, makeCoordinate(2,4));
+		wb.setHasMoved();
+		assertFalse(wb.canMove(makeCoordinate(1, 3), makeCoordinate(3, 5), board));
+	}
+	
+	@Test
+	void bishopMovesDiagonally_OpponentAtDestination()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wb, makeCoordinate(1, 6));
+		board.putPieceAt(bp, makeCoordinate(4,3));
+		bp.setHasMoved();
+		assertTrue(wb.canMove(makeCoordinate(1, 6), makeCoordinate(4, 3), board));
+	}
+	
+	@Test
+	void bishopMovesDiagonally_SameColorAtDestination()
+	{
+		ChessPiece wb = factory.makePiece(WHITEBISHOP);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wb, makeCoordinate(1, 6));
+		board.putPieceAt(wp, makeCoordinate(4,3));
+		wp.setHasMoved();
+		assertFalse(wb.canMove(makeCoordinate(1, 6), makeCoordinate(4, 3), board));
+	}
+	
+////////////////////////Test Cases for Knight ////////////////////////////////////////////////
+	
+	@Test
+	void knightMovesVerticalUpRight_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		assertTrue(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,3), board));
+	}
+	
+	@Test
+	void knightMovesVerticalUpLeft_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		assertTrue(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,1), board));
+	}
+	
+	@Test
+	void knightMovesVerticalDownRight_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(1,4), board));
+	}
+	
+	@Test
+	void knightMovesVerticalDownLeft_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(1,2), board));
+	}
+	
+	@Test
+	void knightMovesHorizontallyRightUp_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		assertTrue(wkn.canMove(makeCoordinate(1,2), makeCoordinate(2,4), board));
+	}
+	
+	@Test
+	void knightMovesHorizontallyRightDown_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(2,5), board));
+	}
+	
+	@Test
+	void knightMovesHorizontallyLeftUp_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(4,1), board));
+	}
+	
+	@Test
+	void knightMovesHorizontallyLeftDown_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(2,1), board));
+	}
+	
+	@Test
+	void knightMovesNonLShapeMove_Empty()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		assertFalse(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,4), board));
+	}
+	
+	@Test
+	void knightMovesLShapeMove_JumpsOverPiece()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(1,3));
+		bp.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(2,1), board));
+	}
+	
+	@Test
+	void knightMovesVerticalLShape_OpponentAtDestination()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		board.putPieceAt(bp, makeCoordinate(3,3));
+		bp.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,3), board));
+	}
+	
+	@Test
+	void knightMovesHorizontalLShape_OpponentAtDestination()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(2,1));
+		bp.setHasMoved();
+		assertTrue(wkn.canMove(makeCoordinate(3,3), makeCoordinate(2,1), board));
+	}
+	
+	@Test
+	void knightMovesVerticalLShape_SameColorAtDestination()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wkn, makeCoordinate(1,2));
+		board.putPieceAt(wp, makeCoordinate(3,3));
+		wp.setHasMoved();
+		assertFalse(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,3), board));
+	}
+	
+	@Test
+	void knightMovesHorizontalLShape_SameColorAtDestination()
+	{
+		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wkn, makeCoordinate(3,3));
+		wkn.setHasMoved();
+		board.putPieceAt(wp, makeCoordinate(2,1));
+		assertFalse(wkn.canMove(makeCoordinate(3,3), makeCoordinate(2,1), board));
+	}
+	
+////////////////////////Test Cases for Rook //////////////////////////////////////////////////
+	
+	@Test
+	void rookMovesVerticallyUp_Empty()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertTrue(wr.canMove(makeCoordinate(1,1), makeCoordinate(5,1), board));
+	}
+	
+	@Test
+	void rookMovesVerticallyDown_Empty()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wr, makeCoordinate(5,1));
+		wr.setHasMoved();
+		assertTrue(wr.canMove(makeCoordinate(5,1), makeCoordinate(1,1), board));
+	}
+	
+	@Test
+	void rookMovesHorizontallyRight_Empty()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		assertTrue(wr.canMove(makeCoordinate(1,1), makeCoordinate(1,5), board));
+	}
+	
+	@Test
+	void rookMovesHorizontallyLeft_Empty()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertTrue(wr.canMove(makeCoordinate(1,8), makeCoordinate(1,5), board));
+	}
+	
+	@Test
+	void rookAttemptsDiagonalMove()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		assertFalse(wr.canMove(makeCoordinate(1,8), makeCoordinate(2,7), board));
+	}
+	
+	@Test
+	void rookAttemptsToJumpOverPiece()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		board.putPieceAt(wr, makeCoordinate(1,8));
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		assertFalse(wr.canMove(makeCoordinate(1,8), makeCoordinate(1,2), board));
+	}
+	
+	@Test
+	void rookMovesVertically_OpponentAtDestination()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		board.putPieceAt(bp, makeCoordinate(5,1));
+		bp.setHasMoved();
+		assertTrue(wr.canMove(makeCoordinate(1,1), makeCoordinate(5,1), board));
+	}
+	
+	@Test
+	void rookMovesHorizontally_OpponentAtDestination()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		board.putPieceAt(bp, makeCoordinate(1,5));
+		bp.setHasMoved();
+		assertTrue(wr.canMove(makeCoordinate(1,1), makeCoordinate(1,5), board));
+	}
+	
+	@Test
+	void rookMovesVertically_SameColorAtDestination()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		board.putPieceAt(wp, makeCoordinate(5,1));
+		wp.setHasMoved();
+		assertFalse(wr.canMove(makeCoordinate(1,1), makeCoordinate(5,1), board));
+	}
+	
+	@Test
+	void rookMovesHorizontally_SameColorAtDestination()
+	{
+		ChessPiece wr = factory.makePiece(WHITEROOK);
+		ChessPiece wk = factory.makePiece(WHITEKING);
+		board.putPieceAt(wr, makeCoordinate(1,1));
+		board.putPieceAt(wk, makeCoordinate(1,5));
+		assertFalse(wr.canMove(makeCoordinate(1,1), makeCoordinate(1,5), board));
+	}
+////////////////////////Test Cases for Pawn //////////////////////////////////////////////////
+	
 }

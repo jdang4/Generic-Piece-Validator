@@ -82,7 +82,7 @@ public class Board
 	{
 		return board.put(c, p);
 	}
-
+	
 	/**
 	 * @return the nColumns
 	 */

@@ -86,22 +86,117 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	/*
 	 * TODO write the lambda functions of the movement of these pieces
 	 */
+	
+	private boolean checkValidCastle(Coordinate from, Coordinate to, Board b)
+	{
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		if (from.getColumn() + 2 == to.getColumn())
+		{
+			Coordinate rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 8);
+			
+			if (b.getPieceAt(rookCoordinate) != null)
+			{
+				PieceName pieceType = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getName();
+				PlayerColor pieceColor = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getColor();
+				
+				if (pieceType.equals(PieceName.ROOK) && pieceColor.equals(movingPieceColor))
+				{
+					if (!((ChessPiece)b.getPieceAt(rookCoordinate)).hasMoved())
+					{
+						// loop until get to rook coordinate to check if no pieces in the way
+						int startColumn = from.getColumn() + 1;
+						
+						while (startColumn <= to.getColumn())
+						{
+							Coordinate nextCoordinate = Coordinate.makeCoordinate(from.getRow(), startColumn);
+							
+							if (b.getPieceAt(nextCoordinate) != null)
+							{
+								return false;
+							}
+							
+							startColumn++; 
+						}
+						
+						// if all empty in between
+						return true; 
+					}
+				}
+			} 
+		}
+		
+		// doing the left castling
+		else if (from.getColumn() - 2 == to.getColumn())
+		{
+			Coordinate rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 1);
+			
+			if (b.getPieceAt(rookCoordinate) != null)
+			{
+				PieceName pieceType = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getName();
+				PlayerColor pieceColor = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getColor();
+				
+				if (pieceType.equals(PieceName.ROOK) && pieceColor.equals(movingPieceColor))
+				{
+					if (!((ChessPiece)b.getPieceAt(rookCoordinate)).hasMoved())
+					{ 
+						// loop until get to rook coordinate to check if no pieces in the way
+						int startColumn = from.getColumn() - 1;
+						
+						while (startColumn >= to.getColumn())
+						{ 
+							Coordinate nextCoordinate = Coordinate.makeCoordinate(from.getRow(), startColumn);
+							
+							if (b.getPieceAt(nextCoordinate) != null)
+							{
+								return false;
+							}
+							
+							startColumn--;
+						}
+						// if all empty in between
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	// can move one space at a time in any direction
 	private ChessPieceValidator king = (from, to, b) -> {
-		if ((Math.abs(to.getRow() - from.getRow()) > 1)
+		
+		// checking if trying to make a castling move
+		if (from.getRow() == to.getRow() &&
+				Math.abs(to.getColumn() - from.getColumn()) == 2)
+		{
+			if (!hasMoved())
+			{
+				return checkValidCastle(from, to, b);
+			}
+			
+			else
+			{
+				return false;
+			}
+			
+		}
+		
+		else if ((Math.abs(to.getRow() - from.getRow()) > 1)
 				|| (Math.abs(to.getColumn() - from.getColumn()) > 1)) 
 		{
 			return false;
 		}
-
+		
+		
 		boolean verticalMove = canMoveVertically(from, to, b);
 		boolean horizontalMove = canMoveHorizontally(from, to, b);
 		boolean diagonalMove = canMoveDiagonally(from, to, b);
 
 		return (verticalMove || horizontalMove || diagonalMove);
 	};
-
+ 
 	// can move in any direction as far as it can without jumping over any pieces
 	private ChessPieceValidator queen = (from, to, b) -> 
 	{
@@ -280,9 +375,12 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		 */
 
 		// checking if where I want to move is a valid position within the board
-		if ((!insideBoard(to, b)) || (from.equals(to))) {
+		if ((!insideBoard(to, b)) || (from.equals(to)) 
+			|| (b.getPieceAt(from) == null)) 
+		{
 			return false;
 		}
+		
 
 		PieceName movingPieceType = ((ChessPieceDescriptor) b.getPieceAt(from)
 				.getDescriptor()).getName();
@@ -317,7 +415,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			default:
 				// if allowed, I would have thrown an exception here
 				// but for this assignment it just yields a false statement
-				result = false;
+				result = false; 
 				break;
 		}
 
@@ -359,15 +457,21 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			else {
 				// check if next move will be the desired location and see if I can
 				// remove an opponent piece
-				if (nextRow == to.getRow()) {
+				if (nextRow == to.getRow()) 
+				{
 					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b
 							.getPieceAt(to).getDescriptor()).getColor();
 
 					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) {
+					if (!movingPieceColor.equals(nextPieceColor)) 
+					{
 						return true;
 					}
-
+				}
+				
+				else
+				{
+					return false;
 				}
 			}
 		}
@@ -416,6 +520,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 					if (!movingPieceColor.equals(nextPieceColor)) {
 						return true;
 					}
+				}
+				
+				else
+				{
+					return false;
 				}
 			}
 		}
@@ -486,6 +595,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 					}
 
 				}
+				
+				else
+				{
+					return false;
+				}
 			}
 		}
 
@@ -523,6 +637,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 						return true;
 					}
 
+				}
+				
+				else
+				{
+					return false;
 				}
 			}
 		}
@@ -583,6 +702,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 						return true;
 					}
 				}
+				
+				else
+				{
+					return false;
+				}
 			}
 			nextRow++;
 			nextColumn++;
@@ -628,6 +752,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 					{
 						return true;
 					}
+				}
+				
+				else
+				{
+					return false;
 				}
 			}
 			nextRow++;
@@ -680,6 +809,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 						return true;
 					}
 				}
+				
+				else
+				{
+					return false;
+				}
 			}
 			nextRow--;
 			nextColumn++;
@@ -725,6 +859,11 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 					{
 						return true;
 					}
+				}
+				
+				else
+				{
+					return false;
 				}
 			}
 			nextRow--;
