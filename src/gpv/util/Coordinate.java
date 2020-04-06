@@ -47,12 +47,34 @@ public class Coordinate extends Point
 	 * already.
 	 * 
 	 * @param row
-	 * @param column
+	 * @param column 
 	 * @return
 	 */
 	public static Coordinate makeCoordinate(int row, int column)
 	{
 		return new Coordinate(row, column);
+	}
+	
+	/**
+	 * Gets the absolute row distance between two coordinates
+	 * @param c 
+	 * 			the coordinate to get the distance to from the calling coordinate
+	 * @return the integer value of the row distance
+	 */
+	public int getRowDistance(Coordinate c)
+	{
+		return Math.abs(c.getRow() - this.x);
+	}
+	
+	/**
+	 * Gets the absolute column distance between two coordinates
+	 * @param c 
+	 * 			the coordinate to get the distance to from the calling coordinate
+	 * @return the integer value of the column distance
+	 */
+	public int getColumnDistance(Coordinate c)
+	{
+		return Math.abs(c.getColumn() - this.y);
 	}
 	
 	/**

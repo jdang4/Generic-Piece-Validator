@@ -161,9 +161,9 @@ class ChessTests
 	@Test // 5
 	void kingMovesHorizontallyRight_Empty()
 	{
-		ChessPiece wk = factory.makePiece(WHITEKING);
-		board.putPieceAt(wk, makeCoordinate(1,5));
-		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,6), board));
+		ChessPiece bk = factory.makePiece(BLACKKING);
+		board.putPieceAt(bk, makeCoordinate(8,5));
+		assertTrue(bk.canMove(makeCoordinate(8,5), makeCoordinate(8,6), board));
 	}
 	
 	@Test // 5
@@ -177,9 +177,9 @@ class ChessTests
 	@Test
 	void kingMovesDiagonallyUpRight_Empty()
 	{
-		ChessPiece wk = factory.makePiece(WHITEKING);
-		board.putPieceAt(wk, makeCoordinate(1,5));
-		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2,6), board));
+		ChessPiece bk = factory.makePiece(BLACKKING);
+		board.putPieceAt(bk, makeCoordinate(8,5));
+		assertTrue(bk.canMove(makeCoordinate(8,5), makeCoordinate(7,4), board));
 	}
 	
 	@Test
@@ -206,6 +206,15 @@ class ChessTests
 		board.putPieceAt(wk, makeCoordinate(2,5));
 		wk.setHasMoved();
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,4), board));
+	}
+	
+	@Test
+	void kingAttemptsInvalidMove_Empty()
+	{
+		ChessPiece bk = factory.makePiece(BLACKKING);
+		board.putPieceAt(bk, makeCoordinate(7,5));
+		bk.setHasMoved();
+		assertFalse(bk.canMove(makeCoordinate(7,5), makeCoordinate(8,7), board));
 	}
 	
 	@Test // 6
@@ -391,6 +400,16 @@ class ChessTests
 		board.putPieceAt(wk, makeCoordinate(1,5));
 		board.putPieceAt(wr, makeCoordinate(1,8));
 		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,7), board));
+	}
+	
+	@Test
+	void blackKingMakesValidRightCastlingMove()
+	{
+		ChessPiece wk = factory.makePiece(BLACKKING);
+		ChessPiece wr = factory.makePiece(BLACKROOK);
+		board.putPieceAt(wk, makeCoordinate(8,5));
+		board.putPieceAt(wr, makeCoordinate(8,8));
+		assertTrue(wk.canMove(makeCoordinate(8,5), makeCoordinate(8,7), board));
 	}
 	
 	@Test
@@ -702,7 +721,7 @@ class ChessTests
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
 		board.putPieceAt(wb, makeCoordinate(1, 3));
-		board.putPieceAt(wb, makeCoordinate(2,4));
+		board.putPieceAt(wp, makeCoordinate(2,4));
 		wb.setHasMoved();
 		assertFalse(wb.canMove(makeCoordinate(1, 3), makeCoordinate(3, 5), board));
 	}
