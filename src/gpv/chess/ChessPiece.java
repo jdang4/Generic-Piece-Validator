@@ -82,15 +82,39 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 		return false;
 	}
-
+	
+	private boolean checkAllThreeDirections(Coordinate from, Coordinate to, Board b)
+	{
+		int rowDistance = Math.abs(to.getRow() - from.getRow());
+		int columnDistance = Math.abs(to.getColumn() - from.getColumn());
+		
+		if (from.getColumn() == to.getColumn())
+		{
+			return canMoveVertically(from, to, b);
+		}
+		 
+		else if (from.getRow() == to.getRow())
+		{
+			return canMoveHorizontally(from, to, b);
+		}
+		
+		else if (rowDistance == columnDistance)
+		{
+			return canMoveDiagonally(from, to, b);
+		}
+		
+		return false;
+	}
+	
 	/*
 	 * TODO write the lambda functions of the movement of these pieces
 	 */
 	
-	private boolean checkValidCastle(Coordinate from, Coordinate to, Board b)
+	private boolean checkValidCastling(Coordinate from, Coordinate to, Board b)
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 		
+		// doing the right castling
 		if (from.getColumn() + 2 == to.getColumn())
 		{
 			Coordinate rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 8);
@@ -173,7 +197,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		{
 			if (!hasMoved())
 			{
-				return checkValidCastle(from, to, b);
+				return checkValidCastling(from, to, b);
 			}
 			
 			else
@@ -183,36 +207,31 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			
 		}
 		
+		// cannot make a castling move
 		else if ((Math.abs(to.getRow() - from.getRow()) > 1)
 				|| (Math.abs(to.getColumn() - from.getColumn()) > 1)) 
 		{
 			return false;
 		}
 		
+		else 
+		{ 
+			return checkAllThreeDirections(from, to, b);
+		}
 		
-		boolean verticalMove = canMoveVertically(from, to, b);
-		boolean horizontalMove = canMoveHorizontally(from, to, b);
-		boolean diagonalMove = canMoveDiagonally(from, to, b);
-
-		return (verticalMove || horizontalMove || diagonalMove);
 	};
  
 	// can move in any direction as far as it can without jumping over any pieces
 	private ChessPieceValidator queen = (from, to, b) -> 
 	{
-		boolean verticalMove = canMoveVertically(from, to, b);
-		boolean horizontalMove = canMoveHorizontally(from, to, b);
-		boolean diagonalMove = canMoveDiagonally(from, to, b);
-
-		return (verticalMove || horizontalMove || diagonalMove);
+		return checkAllThreeDirections(from, to, b);
 	};
 
 	// can move diagonally as far as they want, but can only move diagonally
 	private ChessPieceValidator bishop = (from, to, b) ->
 	{
-		boolean diagonalMove = canMoveDiagonally(from, to, b);
-		
-		return diagonalMove;
+		return canMoveDiagonally(from, to, b);
+	 
 	};
 
 	// moves in an L shape (2 in one direction, 1 in the 90 degree direction) and can jump
@@ -258,8 +277,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				// there is a piece at the destination
 				else 
 				{
-					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to)
-							.getDescriptor()).getColor();
+					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
 					
 					if (!movingPieceColor.equals(destinationPieceColor)) 
 					{
@@ -274,11 +292,18 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 	private ChessPieceValidator rook = (from, to, b) -> 
 	{
-		boolean verticalMove = canMoveVertically(from, to, b);
-		boolean horizontalMove = canMoveHorizontally(from, to, b);
+		if (from.getColumn() == to.getColumn())
+		{
+			return canMoveVertically(from, to, b);
+		}
+		
+		else if (from.getRow() == to.getRow())
+		{
+			return canMoveHorizontally(from, to, b);
+		}
 
-		return (verticalMove || horizontalMove);
-	};
+		return false;
+	}; 
 
 	private boolean checkPawnMove_OneSpace(Coordinate from, Coordinate to, Board b)
 	{
@@ -299,8 +324,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			{
 				if (b.getPieceAt(to) != null)
 				{
-					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to)
-							.getDescriptor()).getColor();
+					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
 					
 					if (!movingPieceColor.equals(destinationPieceColor))
 					{
@@ -382,8 +406,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		}
 		
 
-		PieceName movingPieceType = ((ChessPieceDescriptor) b.getPieceAt(from)
-				.getDescriptor()).getName();
+		PieceName movingPieceType = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getName();
 
 		boolean result = false;
 
@@ -439,8 +462,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveVertically_Up(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from)
-				.getDescriptor()).getColor();
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 
 		for (int nextRow = from.getRow() + 1; nextRow <= to.getRow(); nextRow++) {
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow,
@@ -459,8 +481,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				// remove an opponent piece
 				if (nextRow == to.getRow()) 
 				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b
-							.getPieceAt(to).getDescriptor()).getColor();
+					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
 
 					// found an oponent piece at the desired location
 					if (!movingPieceColor.equals(nextPieceColor)) 
@@ -499,8 +520,8 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 
 		for (int nextRow = from.getRow() - 1; nextRow >= to.getRow(); nextRow--) {
-			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow,
-					to.getColumn());
+			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
+			
 			// check if there is a piece in the way (no jumping over)
 			if (b.getPieceAt(nextCoordinate) == null) {
 				// got to the desired location and there is no piece at the coordinate
@@ -562,16 +583,13 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	}
 
-	private boolean canMoveHorizontally_Right(Coordinate from, Coordinate to,
-			Board b)
+	private boolean canMoveHorizontally_Right(Coordinate from, Coordinate to, Board b)
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from)
 				.getDescriptor()).getColor();
 
-		for (int nextColumn = from.getColumn() + 1; nextColumn <= to
-				.getColumn(); nextColumn++) {
-			Coordinate nextCoordinate = Coordinate.makeCoordinate(to.getRow(),
-					nextColumn);
+		for (int nextColumn = from.getColumn() + 1; nextColumn <= to.getColumn(); nextColumn++) {
+			Coordinate nextCoordinate = Coordinate.makeCoordinate(to.getRow(), nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
 			if (b.getPieceAt(nextCoordinate) == null) {
@@ -586,8 +604,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				// check if next move will be the desired location and see if I can
 				// remove an opponent piece
 				if (nextColumn == to.getColumn()) {
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b
-							.getPieceAt(to).getDescriptor()).getColor();
+					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
 
 					// found an oponent piece at the desired location
 					if (!movingPieceColor.equals(nextPieceColor)) {
@@ -651,11 +668,15 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 	private boolean canMoveHorizontally(Coordinate from, Coordinate to, Board b)
 	{
-		if (from.getRow() == to.getRow()) {
-			if (from.getColumn() < to.getColumn()) {
+		if (from.getRow() == to.getRow()) 
+		{
+			// piece is attempting to move right horizontally
+			if (from.getColumn() < to.getColumn()) 
+			{
 				return canMoveHorizontally_Right(from, to, b);
 			}
-
+			
+			// piece is attempting to move left horizontally
 			else {
 				return canMoveHorizontally_Left(from, to, b);
 			}
@@ -756,7 +777,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				
 				else
 				{
-					return false;
+					return false; 
 				}
 			}
 			nextRow++;
@@ -768,7 +789,16 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 	private boolean canMoveDiagonally_Up(Coordinate from, Coordinate to, Board b)
 	{
-		return (canMoveDiagonally_UpRight(from, to, b) || canMoveDigonally_UpLeft(from, to, b));
+		if (from.getColumn() < to.getColumn()) 
+		{
+			return canMoveDiagonally_UpRight(from, to, b);
+		}
+		
+		else 
+		{
+			return canMoveDigonally_UpLeft(from, to, b);
+		}
+		
 	}
 
 	private boolean canMoveDiagonally_DownRight(Coordinate from, Coordinate to, Board b)
@@ -828,7 +858,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 		int nextRow = from.getRow() - 1;
 		int nextColumn = from.getColumn() - 1;
-
+ 
 		// I believe for diagonals in a square, you move vertically and horizontally the
 		// same amount of times
 		while (nextRow >= to.getRow() && nextColumn >= to.getColumn()) 
@@ -865,6 +895,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 				{
 					return false;
 				}
+				
 			}
 			nextRow--;
 			nextColumn--;
@@ -890,7 +921,16 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally_Down(Coordinate from, Coordinate to, Board b)
 	{
-		return (canMoveDiagonally_DownRight(from, to, b) || canMoveDiagonally_DownLeft(from, to, b));
+		if (from.getColumn() < to.getColumn()) 
+		{
+			return canMoveDiagonally_DownRight(from, to, b);
+		}
+		
+		else 
+		{
+			return canMoveDiagonally_DownLeft(from, to, b);
+		}
+
 	}
 
 	/**
@@ -910,7 +950,15 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally(Coordinate from, Coordinate to, Board b)
 	{
-		return (canMoveDiagonally_Up(from, to, b) || canMoveDiagonally_Down(from, to, b));
+		if (from.getRow() < to.getRow()) 
+		{
+			return canMoveDiagonally_Up(from, to, b);
+		}
+		
+		else
+		{
+			return canMoveDiagonally_Down(from, to, b);
+		} 
 	}
 
 	/**

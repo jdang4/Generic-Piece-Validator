@@ -100,17 +100,8 @@ class ChessTests
 		assertTrue(bq.hasMoved());
 	}
 	
-	/*
-	@Test
-	void thisShouldFailOnDelivery()
-	{
-		ChessPiece wk = factory.makePiece(WHITEKING);
-		board.putPieceAt(wk, makeCoordinate(1,5));
-		assertTrue(wk.canMove(makeCoordinate(1,5), makeCoordinate(2, 5), board));
-	}
-	*/
 	@Test // 1
-	void rowCoordinateOfDestinationNotInBoard()
+	void rowCoordinateOfDestinationIsNotInBoard()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
@@ -118,7 +109,7 @@ class ChessTests
 	}
 	
 	@Test // 2
-	void columnCoordinateOfDestinationNotinBoard()
+	void columnCoordinateOfDestinationIsNotInBoard()
 	{
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		board.putPieceAt(wb, makeCoordinate(1,8));
@@ -126,7 +117,7 @@ class ChessTests
 	}
 	
 	@Test // 3
-	void pieceMovingToSourceLocation()
+	void pieceMovingInPlace()
 	{
 		ChessPiece bk = factory.makePiece(BLACKKING);
 		board.putPieceAt(bk, makeCoordinate(1,5));
@@ -134,7 +125,7 @@ class ChessTests
 	}
 	
 	@Test
-	void pieceMovingFromAWrongLocation()
+	void noPieceAtSourceLocation()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		board.putPieceAt(wk, makeCoordinate(1,5));
@@ -218,7 +209,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesVerticallyDown_OpponentAtDestination()
+	void kingCapturesEnemy_VerticallyDown()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -230,7 +221,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesVerticallyUp_OpponentAtDestination()
+	void kingCapturesEnemy_VerticallyUp()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -241,7 +232,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesHorizontallyRight_OpponentAtDestination()
+	void kingCapturesEnemy_HorizontallyRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -252,7 +243,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesHorizontallyLeft_OpponentAtDestination()
+	void kingCapturesEnemy_HorizontallyLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -263,7 +254,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesDiagonallyUpRight_OpponentAtDestination()
+	void kingCapturesEnemy_DiagonallyUpRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -274,7 +265,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesDiagonallyUpLeft_OpponentAtDestination()
+	void kingCapturesEnemy_DiagonallyUpLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -285,7 +276,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesDiagonallyDownRight_OpponentAtDestination()
+	void kingCapturesEnemy_DiagonallyDownRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -296,8 +287,8 @@ class ChessTests
 		assertTrue(wk.canMove(makeCoordinate(2,5), makeCoordinate(1,6), board));
 	}
 	
-	@Test // 6
-	void kingMovesDiagonallyDownLeft_OpponentAtDestination()
+	@Test 
+	void kingCapturesEnemy_DiagonallyDownLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece bk = factory.makePiece(BLACKKING);
@@ -309,7 +300,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesVerticallyDown_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_VerticallyDown()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -320,7 +311,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesVerticallyUp_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_VerticallyUp()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -331,7 +322,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesHorizontallyRight_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_HorizontallyRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
@@ -341,7 +332,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesHorizontallyLeft_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_HorizontallyLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
@@ -350,8 +341,8 @@ class ChessTests
 		assertFalse(wk.canMove(makeCoordinate(1,5), makeCoordinate(1,4), board));
 	}
 	
-	@Test // 6 (REMOVE)
-	void kingMovesDiagonallyUpRight_SameColorAtDestination()
+	@Test
+	void kingAttemptsToCaptureSameColor_DiagonallyUpRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -361,7 +352,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesDiagonallyUpLeft_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_DiagonallyUpLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -371,7 +362,7 @@ class ChessTests
 	}
 	
 	@Test // 6
-	void kingMovesDiagonallyDownRight_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_DiagonallyDownRight()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
@@ -382,7 +373,7 @@ class ChessTests
 	}
 	
 	@Test 
-	void kingMovesDiagonallyDownLeft_SameColorAtDestination()
+	void kingAttemptsToCaptureSameColor_DiagonallyDownLeft()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
@@ -403,7 +394,7 @@ class ChessTests
 	}
 	
 	@Test
-	void kingMovedAndAttemptsRightCastling()
+	void kingAttemptsRightCastling_KingHasMovedBefore()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -414,7 +405,7 @@ class ChessTests
 	}
 	
 	@Test
-	void kingAttemptsRightCastlingWithMovedRook()
+	void kingAttemptsRightCastling_RookHasMovedBefore()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -447,7 +438,7 @@ class ChessTests
 	}
 	
 	@Test
-	void kingMovedAndAttemptsLeftCastling()
+	void kingAttemptsLeftCastling_KingHasMovedBefore()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -458,7 +449,7 @@ class ChessTests
 	}
 	
 	@Test
-	void kingAttemptsLeftCastlingWithMovedRook()
+	void kingAttemptsLeftCastling_RookHasMovedBefore()
 	{
 		ChessPiece wk = factory.makePiece(WHITEKING);
 		ChessPiece wr = factory.makePiece(WHITEROOK);
@@ -488,14 +479,6 @@ class ChessTests
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		board.putPieceAt(wq, makeCoordinate(1,4));
 		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(2,4), board));
-	}
-	
-	@Test
-	void queenMovesUpTwoSpace_Empty()
-	{
-		ChessPiece wq = factory.makePiece(WHITEQUEEN);
-		board.putPieceAt(wq, makeCoordinate(1,4));
-		assertTrue(wq.canMove(makeCoordinate(1,4), makeCoordinate(3,4), board));
 	}
 	
 	@Test
@@ -606,7 +589,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesVertically_OpponentAtDestination()
+	void queenCapturesEnemy_Vertically()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -617,7 +600,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesHorizontally_OpponentAtDestination()
+	void queenCapturesEnemy_Horizontally()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -628,7 +611,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesDiagonally_OpponentAtDestination()
+	void queenCapturesEnemy_Diagonally()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -640,7 +623,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesVertically_SameColorAtDestination()
+	void queenAttemptsToCaptureSameColor_Vertically()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -650,7 +633,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesHorizontally_SameColorAtDestination()
+	void queenAttemptsToCaptureSameColor_Horizontally()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece wk = factory.makePiece(WHITEKING);
@@ -660,7 +643,7 @@ class ChessTests
 	}
 	
 	@Test
-	void queenMovesDiagonally_SameColorAtDestination()
+	void queenAttemptsToCaptureSameColor_Diagonally()
 	{
 		ChessPiece wq = factory.makePiece(WHITEQUEEN);
 		ChessPiece wp = factory.makePiece(WHITEKING);
@@ -706,7 +689,7 @@ class ChessTests
 	}
 	
 	@Test
-	void bishopMovesInNonDiagonalDirection_Empty()
+	void bishopAttemptsInvalidMove()
 	{
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		board.putPieceAt(wb, makeCoordinate(1, 6));
@@ -725,7 +708,7 @@ class ChessTests
 	}
 	
 	@Test
-	void bishopMovesDiagonally_OpponentAtDestination()
+	void bishopCapturesEnemy()
 	{
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -736,7 +719,7 @@ class ChessTests
 	}
 	
 	@Test
-	void bishopMovesDiagonally_SameColorAtDestination()
+	void bishopAttemptsToCaptureSameColor()
 	{
 		ChessPiece wb = factory.makePiece(WHITEBISHOP);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -817,7 +800,7 @@ class ChessTests
 	}
 	
 	@Test
-	void knightMovesNonLShapeMove_Empty()
+	void knightAttemptsInvalidMove_Empty()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		board.putPieceAt(wkn, makeCoordinate(1,2));
@@ -825,7 +808,7 @@ class ChessTests
 	}
 	
 	@Test
-	void knightMovesLShapeMove_JumpsOverPiece()
+	void knightJumpsOverPiece()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -837,7 +820,7 @@ class ChessTests
 	}
 	
 	@Test
-	void knightMovesVerticalLShape_OpponentAtDestination()
+	void knightCapturesEnemy_VerticalLShapeMove()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -848,7 +831,7 @@ class ChessTests
 	}
 	
 	@Test
-	void knightMovesHorizontalLShape_OpponentAtDestination()
+	void knightCapturesEnemy_HorizontalLShapeMove()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -860,7 +843,7 @@ class ChessTests
 	}
 	
 	@Test
-	void knightMovesVerticalLShape_SameColorAtDestination()
+	void knightAttemptsToCaptureSameColor_VerticalLShapeMove()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -869,9 +852,9 @@ class ChessTests
 		wp.setHasMoved();
 		assertFalse(wkn.canMove(makeCoordinate(1,2), makeCoordinate(3,3), board));
 	}
-	
+
 	@Test
-	void knightMovesHorizontalLShape_SameColorAtDestination()
+	void knightAttemptsToCaptureSameColor_HorizontalLShapeMove()
 	{
 		ChessPiece wkn = factory.makePiece(WHITEKNIGHT);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -935,7 +918,7 @@ class ChessTests
 	}
 	
 	@Test
-	void rookMovesVertically_OpponentAtDestination()
+	void rookCaputuresEnemy_Vertically()
 	{
 		ChessPiece wr = factory.makePiece(WHITEROOK);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -946,7 +929,7 @@ class ChessTests
 	}
 	
 	@Test
-	void rookMovesHorizontally_OpponentAtDestination()
+	void rookCaputuresEnemy_Horizontally()
 	{
 		ChessPiece wr = factory.makePiece(WHITEROOK);
 		ChessPiece bp = factory.makePiece(BLACKPAWN);
@@ -957,7 +940,7 @@ class ChessTests
 	}
 	
 	@Test
-	void rookMovesVertically_SameColorAtDestination()
+	void rookAttemptsToCaputureSameColor_Vertically()
 	{
 		ChessPiece wr = factory.makePiece(WHITEROOK);
 		ChessPiece wp = factory.makePiece(WHITEPAWN);
@@ -968,7 +951,7 @@ class ChessTests
 	}
 	
 	@Test
-	void rookMovesHorizontally_SameColorAtDestination()
+	void rookAttemptsToCaputureSameColor_Horizontally()
 	{
 		ChessPiece wr = factory.makePiece(WHITEROOK);
 		ChessPiece wk = factory.makePiece(WHITEKING);
@@ -978,4 +961,88 @@ class ChessTests
 	}
 ////////////////////////Test Cases for Pawn //////////////////////////////////////////////////
 	
+	@Test
+	void pawnMovesOneSpaceForward_Empty()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wp, makeCoordinate(2,5));
+		assertTrue(wp.canMove(makeCoordinate(2,5), makeCoordinate(3,5), board));
+	}
+
+	@Test
+	void pawnAttemptsTwoSpaceForwardOnFirstMove_Empty()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wp, makeCoordinate(2,5));
+		assertTrue(wp.canMove(makeCoordinate(2,5), makeCoordinate(4,5), board));
+	}
+	
+	@Test
+	void pawnAttemptsTwoSpaceForwardOnNonFirstMove_Empty()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		board.putPieceAt(wp, makeCoordinate(3,5));
+		wp.setHasMoved();
+		assertFalse(wp.canMove(makeCoordinate(3,5), makeCoordinate(5,5), board));
+	}
+	
+	@Test
+	void pawnAttemptsCaptureEnemyPieceInFront()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wp, makeCoordinate(3,5));
+		wp.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(4,5));
+		bp.setHasMoved();
+		assertFalse(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,5), board));
+	}
+
+	@Test
+	void pawnCapturesEnemyPiece_DiagonallyUpRight()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wp, makeCoordinate(3,5));
+		wp.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(4,6));
+		bp.setHasMoved();
+		assertTrue(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,6), board));
+	}
+
+	@Test
+	void pawnCapturesEnemyPiece_DiagonallyUpLeft()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wp, makeCoordinate(3,5));
+		wp.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(4,4));
+		bp.setHasMoved();
+		assertTrue(wp.canMove(makeCoordinate(3,5), makeCoordinate(4,4), board));
+	}
+	
+	@Test
+	void pawnAttemptsToCapturesEnemyPiece_DiagonallyDownLeft()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		ChessPiece bp = factory.makePiece(BLACKPAWN);
+		board.putPieceAt(wp, makeCoordinate(5,5));
+		wp.setHasMoved();
+		board.putPieceAt(bp, makeCoordinate(4,3));
+		bp.setHasMoved();
+		assertFalse(wp.canMove(makeCoordinate(5,5), makeCoordinate(4,3), board));
+	}
+	
+	@Test
+	void pawnAttemptsToCapturesSameColorPiece_DiagonallyUpLeft()
+	{
+		ChessPiece wp = factory.makePiece(WHITEPAWN);
+		ChessPiece wq = factory.makePiece(WHITEQUEEN);
+		board.putPieceAt(wp, makeCoordinate(3,4));
+		wp.setHasMoved();
+		board.putPieceAt(wq, makeCoordinate(4,3));
+		wq.setHasMoved();
+		assertFalse(wp.canMove(makeCoordinate(3,4), makeCoordinate(4,3), board));
+	}
 }
