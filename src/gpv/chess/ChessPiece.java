@@ -305,37 +305,77 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	}; 
 
-	private boolean checkPawnMove_OneSpace(Coordinate from, Coordinate to, Board b)
+	private boolean checkPawnMove_OneSpace(Coordinate from, Coordinate to, Board b, boolean isBlackPiece)
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 		
-		if (from.getRow() + 1 == to.getRow()) 
+		if (isBlackPiece)
 		{
-			if (from.getColumn() == to.getColumn())
+			if (from.getRow() - 1 == to.getRow()) 
 			{
-				// make sure no piece in front
-				if (b.getPieceAt(to) == null)
+				// if making only one move forward
+				if (from.getColumn() == to.getColumn())
 				{
-					return true;
-				}
-			}
-			
-			else if (Math.abs(to.getColumn() - from.getColumn()) == 1)
-			{
-				if (b.getPieceAt(to) != null)
-				{
-					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-					
-					if (!movingPieceColor.equals(destinationPieceColor))
+					// make sure no piece in front
+					if (b.getPieceAt(to) == null)
 					{
 						return true;
 					}
-				} 
+				}
+				
+				// see if the pawn can make a capture move
+				else if (Math.abs(to.getColumn() - from.getColumn()) == 1)
+				{
+					if (b.getPieceAt(to) != null)
+					{
+						PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
+						
+						if (!movingPieceColor.equals(destinationPieceColor))
+						{
+							return true;
+						}
+					} 
+				}
 			}
+			
+			return false;
 		}
 		
-		return false;
+		else 
+		{
+			if (from.getRow() + 1 == to.getRow()) 
+			{
+				// if making a one move forward
+				if (from.getColumn() == to.getColumn())
+				{
+					// make sure no piece in front
+					if (b.getPieceAt(to) == null)
+					{
+						return true;
+					}
+				}
+				
+				// see if the pawn can make a capture move
+				else if (Math.abs(to.getColumn() - from.getColumn()) == 1)
+				{
+					if (b.getPieceAt(to) != null)
+					{
+						PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
+						
+						if (!movingPieceColor.equals(destinationPieceColor))
+						{
+							return true;
+						}
+					} 
+				}
+			}
+			
+			return false;
+		}
+		 
+		
 	}
+	
 	/*
 	 * On the pawn's first move, can move 2 squares forward 
 	 * After first move, can only
@@ -347,35 +387,87 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 		//PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 		// not first move situation
-		if (!hasMoved())
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		if (movingPieceColor.equals(PlayerColor.WHITE))
 		{
-			if (from.getRow() + 2 == to.getRow()) 
+			if (!hasMoved())
 			{
-				if (from.getColumn() == to.getColumn())
+				if (from.getRow() + 2 == to.getRow()) 
 				{
-					// just make sure no pieces in the way
-					Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() + 1, from.getColumn());
-					
-					if (b.getPieceAt(oneSpaceForward) == null && 
-							b.getPieceAt(to) == null)
+					if (from.getColumn() == to.getColumn())
 					{
-						return true;
+						// just make sure no pieces in the way
+						Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() + 1, from.getColumn());
+						
+						if (b.getPieceAt(oneSpaceForward) == null && 
+								b.getPieceAt(to) == null)
+						{
+							return true;
+						}
 					}
+					
+					// pawn wants to move two spaces (non-vertically) so return false (down below)
+				}
+				
+				// pawn wants to move only one space so checks for the one space movement
+				else 
+				{
+					// treat the same as a one move forward
+					return checkPawnMove_OneSpace(from, to, b, false);
 				}
 			}
 			
-			else {
-				// treat the same as a one move forward
-				return checkPawnMove_OneSpace(from, to, b);
+			// the pawn has moved before, so it can only move one space
+			else
+			{
+				return checkPawnMove_OneSpace(from, to, b, false);
 			}
+			
+			return false;
 		}
 		
-		else
+		// it is a black pawn
+		else 
 		{
-			return checkPawnMove_OneSpace(from, to, b);
+			if (!hasMoved())
+			{
+				if (from.getRow() - 2 == to.getRow()) 
+				{
+					if (from.getColumn() == to.getColumn())
+					{
+						// just make sure no pieces in the way
+						Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() - 1, from.getColumn());
+						
+						// checking the two spaces forward if they are empty
+						// if yes -> true, if no -> false
+						if (b.getPieceAt(oneSpaceForward) == null && 
+								b.getPieceAt(to) == null)
+						{
+							return true;
+						}
+					}
+					
+					// pawn wants to move two spaces (non-vertically) so return false (down below)
+				}
+				
+				// pawn wants to move only one space so checks for the one space movement
+				else 
+				{
+					// treat the same as a one move forward
+					return checkPawnMove_OneSpace(from, to, b, true);
+				}
+			}
+			
+			// the pawn has moved before, so it can only move one space
+			else
+			{
+				return checkPawnMove_OneSpace(from, to, b, true);
+			}
+			
+			return false;
 		}
 		
-		return false;
 	};
 	
 	/*
@@ -385,18 +477,6 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	@Override
 	public boolean canMove(Coordinate from, Coordinate to, Board b)
 	{
-		/*
-		 * TODO Check if the "to" coordinate is a valid position in the board Verify that
-		 * the piece is actually moving to a different spot Figure out how to
-		 * differientiate between the different piece types either use if or switch
-		 * statements Determine how to define the movement for each piece type without
-		 * using classes Create a function that implements each piece type's movement want
-		 * to create methods for each of the directions (UPDATE) use a lambda function for
-		 * each piece type movement and use the methods for each of the direction to help
-		 * - design methods to verify the moving locations for up, down, left, right, and
-		 * diagonal (vertical and horizontal directions should have similar
-		 * implementation) - write all for vertical directions
-		 */
 
 		// checking if where I want to move is a valid position within the board
 		if ((!insideBoard(to, b)) || (from.equals(to)) 
