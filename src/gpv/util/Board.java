@@ -98,4 +98,29 @@ public class Board
 	{
 		this.nRows = nRows;
 	}
+	
+	/**
+	 * This method is called when trying to determine if the move from the source
+	 * coordinate to the destination coordinate is a valid move. It determines if the
+	 * given coordinate is inside the board.
+	 * 
+	 * @param coord
+	 *            - the position to check if it is inside the board
+	 * @param b
+	 *            - signfies the board that the coordinate is referring to
+	 * @return whether the coordinate is a valid coordinate within the board: true -> a
+	 *         valid coordinate, false -> not a valid coordinate
+	 */
+	public boolean insideBoard(Coordinate c) 
+	{
+		if (c.getRow() > 0 && c.getRow() <= nRows)
+		{
+			if (c.getColumn() > 0 && c.getColumn() <= nColumns) 
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

@@ -8,6 +8,7 @@
 
 package gpv.chess;
 
+import java.util.function.BiPredicate;
 import gpv.Piece;
 import gpv.util.*;
 
@@ -59,143 +60,275 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return descriptor.getName();
 	}
 
-	/**
-	 * This method is called when trying to determine if the move from the source
-	 * coordinate to the destination coordinate is a valid move. It determines if the
-	 * given coordinate is inside the board.
-	 * 
-	 * @param coord
-	 *            - the position to check if it is inside the board
-	 * @param b
-	 *            - signfies the board that the coordinate is referring to
-	 * @return whether the coordinate is a valid coordinate within the board: true -> a
-	 *         valid coordinate, false -> not a valid coordinate
-	 */
-	private boolean insideBoard(Coordinate coord, Board b)
+	private boolean checkForPieceAtDestination(Coordinate to, Board b, PlayerColor movingColor)
 	{
-		if (coord.getRow() > 0 && coord.getRow() <= b.nRows) 
+		if (b.getPieceAt(to) != null) 
 		{
-			if (coord.getColumn() > 0 && coord.getColumn() <= b.nRows) 
+			PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
+			
+			if (movingColor.equals(destinationPieceColor))
 			{
-				return true;
+				return false;
 			}
 
 		}
-
-		return false;
+		
+		return true;
 	}
 	
+	/**
+	 * This method is called when needing to verify that the piece can move in all three 
+	 * of the main directions (vertically, horizontally, and diagonally). Depending on the 
+	 * given coordinates of the from and to variables, it will test the appropriate direction
+	 * and verify if the move is valid or not.
+	 * 
+	 * @param from
+	 *            the source coordinate that the piece is moving from
+	 * @param to
+	 *            the destination coordinate that the piece is moving to
+	 * @param b
+	 *            signfies the board that the piece is moving on
+	 * @return whether the piece can move in its desired direction
+	 * 			true -> a valid move; false -> not a valid move
+	 */
 	private boolean checkAllThreeDirections(Coordinate from, Coordinate to, Board b)
-	{
-		int rowDistance = Math.abs(to.getRow() - from.getRow());
-		int columnDistance = Math.abs(to.getColumn() - from.getColumn());
+	{ 
+		int rowDistance = from.getRowDistance(to);
+		int columnDistance = from.getColumnDistance(to);
 		
+		// piece is making a vertical move so check for that
 		if (from.getColumn() == to.getColumn())
 		{
 			return canMoveVertically(from, to, b);
 		}
-		 
+		
+		// piece is making a horizontal move so check for that
 		else if (from.getRow() == to.getRow())
 		{
 			return canMoveHorizontally(from, to, b);
 		}
 		
+		// piece is making a diagonal move so check for that
 		else if (rowDistance == columnDistance)
 		{
 			return canMoveDiagonally(from, to, b);
 		}
 		
+		// piece is making an invalid move for whichever piece that is calling this function
 		return false;
 	}
 	
-	/*
-	 * TODO write the lambda functions of the movement of these pieces
+	/**
+	 * This method is called when the pawn is trying to move one spacee forward. Calling
+	 * this method will verify if the pawn's movement is a move.
+	 * 
+	 * @param from
+	 *            the source coordinate that the piece is moving from
+	 * @param to
+	 *            the destination coordinate that the piece is moving to
+	 * @param b
+	 *            signfies the board that the piece is moving on
+	 * @return whether the pawn can move one space forward
+	 * 			true -> a valid move; false -> not a valid move
 	 */
-	
-	private boolean checkValidCastling(Coordinate from, Coordinate to, Board b)
+	private boolean checkPawnMove_OneSpace(Coordinate from, Coordinate to, Board b)
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 		
-		// doing the right castling
-		if (from.getColumn() + 2 == to.getColumn())
+		// verifying that the pawn is moving one space forward
+		if (from.getRowDistance(to) == 1)
 		{
-			Coordinate rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 8);
-			
-			if (b.getPieceAt(rookCoordinate) != null)
-			{
-				PieceName pieceType = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getName();
-				PlayerColor pieceColor = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getColor();
+			// making a vertical move
+			if (from.getColumnDistance(to) == 0) {
 				
-				if (pieceType.equals(PieceName.ROOK) && pieceColor.equals(movingPieceColor))
+				// verifying that there are no pieces at the 
+				// destination
+				if (b.getPieceAt(to) == null)
 				{
-					if (!((ChessPiece)b.getPieceAt(rookCoordinate)).hasMoved())
+					return true;
+				}
+				
+				// if there is, not a pawn move
+				else
+				{
+					return false;
+				}
+			}
+			
+			// pawn is attempting to capture an enemy
+			else if (from.getColumnDistance(to) == 1)
+			{
+				// checking movement for a black pawn
+				if (movingPieceColor.equals(PlayerColor.BLACK))
+				{
+					if (from.getRow() - 1 == to.getRow())
 					{
-						// loop until get to rook coordinate to check if no pieces in the way
-						int startColumn = from.getColumn() + 1;
-						
-						while (startColumn <= to.getColumn())
-						{
-							Coordinate nextCoordinate = Coordinate.makeCoordinate(from.getRow(), startColumn);
-							
-							if (b.getPieceAt(nextCoordinate) != null)
-							{
-								return false;
-							}
-							
-							startColumn++; 
-						}
-						
-						// if all empty in between
-						return true; 
+						// verifying that the captured piece is not the same color
+						return checkForPieceAtDestination(to, b, movingPieceColor);
 					}
 				}
-			} 
-		}
-		
-		// doing the left castling
-		else if (from.getColumn() - 2 == to.getColumn())
-		{
-			Coordinate rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 1);
-			
-			if (b.getPieceAt(rookCoordinate) != null)
-			{
-				PieceName pieceType = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getName();
-				PlayerColor pieceColor = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getColor();
 				
-				if (pieceType.equals(PieceName.ROOK) && pieceColor.equals(movingPieceColor))
+				// checking movement for a white pawn
+				else
 				{
-					if (!((ChessPiece)b.getPieceAt(rookCoordinate)).hasMoved())
-					{ 
-						// loop until get to rook coordinate to check if no pieces in the way
-						int startColumn = from.getColumn() - 1;
-						
-						while (startColumn >= to.getColumn())
-						{ 
-							Coordinate nextCoordinate = Coordinate.makeCoordinate(from.getRow(), startColumn);
-							
-							if (b.getPieceAt(nextCoordinate) != null)
-							{
-								return false;
-							}
-							
-							startColumn--;
-						}
-						// if all empty in between
-						return true;
+					if (from.getRow() + 1 == to.getRow())
+					{
+						// verifying that the captured piece is not the same color
+						return checkForPieceAtDestination(to, b, movingPieceColor);
 					}
 				}
 			}
 		}
 		
+		// conditions were not met to make a one space move
+		return false;
+	} 
+	
+	/**
+	 * This method is called when the pawn is trying to move two spaces forward. Calling
+	 * this method will verify if the pawn's movement is a move.
+	 * 
+	 * @param from
+	 *            the source coordinate that the piece is moving from
+	 * @param to
+	 *            the destination coordinate that the piece is moving to
+	 * @param b
+	 *            signfies the board that the piece is moving on
+	 * @return whether the pawn can move two spaces forward
+	 * 			true -> a valid move; false -> not a valid move
+	 */ 
+	private boolean checkPawnTwoSpacesForward(Coordinate from, Coordinate to, Board b)
+	{
+		if ( (from.getRowDistance(to) == 2) && (from.getColumnDistance(to) == 0) )
+		{
+			// just make sure no pieces in the way
+			Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() + 1, from.getColumn());
+			
+			if (b.getPieceAt(oneSpaceForward) == null && 
+					b.getPieceAt(to) == null)
+			{
+				return true;
+			}
+		}
+		
+		// conditions were not met to make a one space move
+		return false;
+	}
+	
+	/**
+	 * This method is called when the king is trying to attempt a castling move. Calling
+	 * this method will verify if the king's movement is a valid castling move.
+	 * @param from
+	 *            the source coordinate that the piece is moving from
+	 * @param to
+	 *            the destination coordinate that the piece is moving to
+	 * @param b
+	 *            signfies the board that the piece is moving on
+	 * @return whether the king can make a valid castling move
+	 * 			true -> a valid castling move; false -> not a valid castling move
+	 */ 
+	private boolean checkValidCastling(Coordinate from, Coordinate to, Board b)
+	{
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		Coordinate rookCoordinate = null; Coordinate.makeCoordinate(from.getRow(), 8);
+		
+		// this flag determines if king is making a right castling move
+		// true -> making right castling move; false -> making left castling move
+		boolean rightCastlingFlag = true;
+		
+		// getting the coordinate where the rook should be for a right castling move
+		if (from.getColumn() + 2 == to.getColumn())
+		{
+			rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 8);
+		}
+		
+		// getting the coordinate where the rook should be for a left castling move
+		else if (from.getColumn() - 2 == to.getColumn())
+		{
+			rookCoordinate = Coordinate.makeCoordinate(from.getRow(), 1);
+			rightCastlingFlag = false; // detected that king is making left castling move
+		}
+		
+		// need to verify that there is a piece at the rook coordinate
+		if (b.getPieceAt(rookCoordinate) != null)
+		{
+			PieceName pieceType = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getName();
+			PlayerColor pieceColor = ((ChessPieceDescriptor) b.getPieceAt(rookCoordinate).getDescriptor()).getColor();
+			
+			// need to verify if there is a rook of the same color at the rook coordinate
+			if (pieceType.equals(PieceName.ROOK) && pieceColor.equals(movingPieceColor) )
+			{
+				ChessPiece rook = (ChessPiece) b.getPieceAt(rookCoordinate);
+				
+				// need to verify if the rook has moved or not
+				if (!rook.hasMoved())
+				{
+					int startColumnIndex = from.getColumn();
+					
+					// used to increment the startColumnIndex appropriately
+					// is set to 1 by default (meant for right castling)
+					int incrementor = 1;
+					
+					BiPredicate<Integer, Integer> stillSpacesLeft;
+					
+					if (rightCastlingFlag)
+					{
+						// king will be moving to the right
+						startColumnIndex = startColumnIndex + 1;
+						
+						// checks for spaces to the right of king
+						stillSpacesLeft = (startIndex, endIndex) -> 
+						{
+							return startIndex < endIndex;
+						};
+					}
+					
+					// detected that the king is making a left castling move
+					else
+					{
+						startColumnIndex = startColumnIndex - 1;
+						
+						incrementor = -1;
+						
+						// checks for spaces to the left of king
+						stillSpacesLeft = (startIndex, endIndex) -> 
+						{
+							return startIndex > endIndex;
+						};
+					}
+					
+					// loop until get to rook coordinate and check if no pieces in the way
+					while (stillSpacesLeft.test(startColumnIndex, rookCoordinate.getColumn()))
+					{
+						Coordinate nextCoordinate = Coordinate.makeCoordinate(from.getRow(), startColumnIndex);
+						
+						// check if the next coordinate to check is occupied by a piece or not
+						if (b.getPieceAt(nextCoordinate) != null)
+						{
+							// found a piece in between the king and rook
+							return false;
+						}
+						
+						// incrementing the startColumnIndex appropriately
+						startColumnIndex = startColumnIndex + incrementor; 
+					}
+					
+					// no pieces were in between the king and the rook so valid castling move
+					return true;
+				}
+			}
+		}
+		
+		// conditions were not met to make a valid castling move
 		return false;
 	}
 
 	// can move one space at a time in any direction
 	private ChessPieceValidator king = (from, to, b) -> 
 	{
-		
 		// checking if trying to make a castling move
-		if (from.getRow() == to.getRow() &&
+		if (from.getRowDistance(to) == 0 &&
 				from.getColumnDistance(to) == 2)
 		{ 
 			// check for conditions of castling
@@ -209,10 +342,9 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			{
 				return false;
 			}
-			
 		}
 	 	
-		// cannot make a castling move
+		// king is not making a castling move
 		else if ((from.getRowDistance(to) > 1)
 				|| (from.getColumnDistance(to) > 1))
 		{
@@ -220,7 +352,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		}
 		
 		// making a standard one move
-		else 
+		else  
 		{ 
 			return checkAllThreeDirections(from, to, b);
 		}
@@ -238,7 +370,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 		return canMoveDiagonally(from, to, b);
 	};
-
+	
 	// checking if the move is valid for a knight
 	private ChessPieceValidator knight = (from, to, b) ->
 	{
@@ -248,22 +380,9 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		if (from.getRowDistance(to) == 2)
 		{
 			if (from.getColumnDistance(to) == 1)
-			{
+			{ 
 				// check if piece occupies the space and what color piece
-				if (b.getPieceAt(to) == null)
-				{
-					return true;
-				}
-				
-				else 
-				{
-					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-					
-					if (!movingPieceColor.equals(destinationPieceColor)) 
-					{
-						return true;
-					}
-				}
+				return checkForPieceAtDestination(to, b, movingPieceColor);
 			}
 		}
 		// move is a L horizontally
@@ -272,21 +391,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			if (from.getRowDistance(to) == 1)
 			{
 				// no piece at destination spot
-				if (b.getPieceAt(to) == null)
-				{
-					return true;
-				} 
-				
-				// there is a piece at the destination
-				else 
-				{
-					PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-					
-					if (!movingPieceColor.equals(destinationPieceColor)) 
-					{
-						return true;
-					}
-				}
+				return checkForPieceAtDestination(to, b, movingPieceColor);
 			}
 		}
 		
@@ -312,194 +417,50 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	};  
 
-	/**
-	 * This method is called to check a one space move by a pawn and see if it is
-	 * a valid pawn move.
-	 * 
-	 * @param from
-	 *            the source coordinate that the piece is moving from
-	 * @param to
-	 *            the destination coordinate that the piece is moving to
-	 * @param b
-	 *            signfies the board that the piece is moving on
-	 * @param isBlackPiece
-	 * 			  signifies if the pawn piece's color is black or not
-	 * @return whether the piece can move one space forward
-	 *         true -> it is a valid move , false -> it is not a valid move
-	 */
-	private boolean checkPawnMove_OneSpace(Coordinate from, Coordinate to, Board b, boolean isBlackPiece)
-	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-		
-		// the piece color is black
-		if (isBlackPiece)
-		{
-			// conditions to validate the move
-			if (from.getRow() - 1 == to.getRow()) 
-			{
-				// if making only one move forward
-				if (from.getColumnDistance(to) == 0) 
-				{
-					// make sure no piece in front
-					if (b.getPieceAt(to) == null)
-					{
-						return true;
-					}
-					
-					// else go to the return false below
-				}
-				
-				// see if the pawn can make a capture move
-				else if (Math.abs(to.getColumn() - from.getColumn()) == 1)
-				{
-					if (b.getPieceAt(to) != null)
-					{
-						PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-						
-						if (!movingPieceColor.equals(destinationPieceColor))
-						{
-							return true;
-						}
-						
-						// else go to the return false below
-					}
-					// else go to the return false below
-				}
-			}
-			
-			// else go to the return false below
-			
-			return false;
-		}
-		
-		else 
-		{
-			if (from.getRow() + 1 == to.getRow()) 
-			{
-				// if making a one move forward
-				if (from.getColumnDistance(to) == 0)
-				{
-					// make sure no piece in front
-					if (b.getPieceAt(to) == null)
-					{
-						return true;
-					}
-					
-					// else go to the return false below
-				}
-				
-				// see if the pawn can make a capture move (diagonally)
-				else if (from.getColumnDistance(to) == 1)
-				{
-					if (b.getPieceAt(to) != null)
-					{
-						PlayerColor destinationPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-						
-						if (!movingPieceColor.equals(destinationPieceColor))
-						{
-							return true;
-						}
-						
-						// else go to the return false below
-					} 
-					
-					// else go to the return false below
-				}
-				
-				// else go to the return false below
-			}
-			
-			return false;
-		}
-		 
-		
-	} 
-	
 	// checks if the move is valid for a pawn
 	private ChessPieceValidator pawn = (from, to, b) ->
 	{
-		// not first move situation
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
 		
-		if (movingPieceColor.equals(PlayerColor.WHITE))
+		// checking if it has moved before
+		if (!hasMoved())
 		{
-			if (!hasMoved())
+			// is able to move 2 spaces forward on first move
+			if (from.getRowDistance(to) == 2)
 			{
-				if (from.getRow() + 2 == to.getRow()) 
+				// handling the movement checking for a white pawn
+				if (movingPieceColor.equals(PlayerColor.WHITE))
 				{
-					if (from.getColumnDistance(to) == 0)
+					if (from.getRow() + 2 == to.getRow())
 					{
-						// just make sure no pieces in the way
-						Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() + 1, from.getColumn());
-						
-						if (b.getPieceAt(oneSpaceForward) == null && 
-								b.getPieceAt(to) == null)
-						{
-							return true;
-						}
+						return checkPawnTwoSpacesForward(from, to, b);
 					}
-					
-					// pawn wants to move two spaces (non-vertically) so return false (down below)
 				}
 				
-				// pawn wants to move only one space so checks for the one space movement
-				else 
+				// handling the movement checking for a black pawn
+				else
 				{
-					// treat the same as a one move forward
-					return checkPawnMove_OneSpace(from, to, b, false);
-				}
-			}
-			
-			// the pawn has moved before, so it can only move one space
-			else
-			{
-				return checkPawnMove_OneSpace(from, to, b, false);
-			}
-			
-			return false;
-		}
-		
-		// it is a black pawn
-		else 
-		{
-			if (!hasMoved())
-			{
-				if (from.getRow() - 2 == to.getRow()) 
-				{
-					if (from.getColumnDistance(to) == 0)
+					if (from.getRow() - 2 == to.getRow())
 					{
-						// just make sure no pieces in the way
-						Coordinate oneSpaceForward = Coordinate.makeCoordinate(from.getRow() - 1, from.getColumn());
-						
-						// checking the two spaces forward if they are empty
-						// if yes -> true, if no -> false
-						if (b.getPieceAt(oneSpaceForward) == null && 
-								b.getPieceAt(to) == null)
-						{
-							return true;
-						}
+						return checkPawnTwoSpacesForward(from, to, b);
 					}
-					
-					// pawn wants to move two spaces (non-vertically) so return false (down below)
-				}
-				
-				// pawn wants to move only one space so checks for the one space movement
-				else 
-				{
-					// treat the same as a one move forward
-					return checkPawnMove_OneSpace(from, to, b, true);
 				}
 			}
 			
-			// the pawn has moved before, so it can only move one space
-			else
+			// the pawn chooses to move only one space forward
+			else if (from.getRowDistance(to) == 1)
 			{
-				return checkPawnMove_OneSpace(from, to, b, true);
+				return checkPawnMove_OneSpace(from, to, b);
 			}
-			
-			return false;
 		}
 		
+		// the pawn can only move one space forward
+		else
+		{
+			return checkPawnMove_OneSpace(from, to, b);
+		}
+		 
+		return false; 
 	};
 	
 	/*
@@ -510,7 +471,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 
 		// checking if where I want to move is a valid position within the board
-		if ((!insideBoard(to, b)) || (from.equals(to)) 
+		if ( (!b.insideBoard(to)) || (from.equals(to)) 
 			|| (b.getPieceAt(from) == null)) 
 		{
 			return false;
@@ -554,7 +515,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 
 		return result;
 	}
-
+	
 	/**
 	 * This method is called when the piece wants to move upwards in a vertical direction.
 	 * It determines if the piece can move vertically up to the desired coordinate while
@@ -572,93 +533,51 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveVertically_Up(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		// check for pieces that may be in the way
 		for (int nextRow = from.getRow() + 1; nextRow <= to.getRow(); nextRow++) 
 		{
-			
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			
+			if (nextRow == to.getRow()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow()) 
-				{
-					return true;
-				}
-
+				return true;
 			}
-			// there is a piece in the way
-			else {
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				else
-				{
-					return false;
-				}
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
+			{
+				break;
 			}
 		}
-
+		
+		// condition for the move is not a valid one by the caller piece
 		return false;
 	}
-
+	
 	/**
 	 * see canMoveVertically_Up function. Same functionality, but checks for if moving vertically down
 	 */
 	private boolean canMoveVertically_Down(Coordinate from, Coordinate to, Board b)
-	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-		
+	{		
 		// check if any pieces are in the way when moving
 		for (int nextRow = from.getRow() - 1; nextRow >= to.getRow(); nextRow--) 
 		{
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
 			
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextRow == to.getRow()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			// found a piece in the way so invalid move
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				else
-				{
-					return false;
-				}
+				break;
 			}
 		}
-
+		
+		// condition for the move is not a valid one by the caller piece
 		return false;
 	}
 
@@ -677,23 +596,30 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveVertically(Coordinate from, Coordinate to, Board b)
 	{
-		// verify that it is moving vertically
-		if (from.getColumn() == to.getColumn()) 
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		// first check the piece at the destination to see if the move
+		// will be valid upon reaching the destination
+		if (checkForPieceAtDestination(to, b, movingPieceColor))
 		{
-			// check to see if it can move vertically upwards
-			if (from.getRow() < to.getRow()) 
+			// verify that it is moving vertically
+			if (from.getColumn() == to.getColumn()) 
 			{
-				return canMoveVertically_Up(from, to, b);
-			}
+				// check to see if it can move vertically upwards
+				if (from.getRow() < to.getRow()) 
+				{
+					return canMoveVertically_Up(from, to, b);
+				}
 
-			// check to see if it can move vertically downwards
-			else 
-			{
-				return canMoveVertically_Down(from, to, b);
+				// check to see if it can move vertically downwards
+				else 
+				{
+					return canMoveVertically_Down(from, to, b);
+				}
 			}
 		}
 		
-		// is not moving vertically
+		// condition for the move is not a valid one by the caller piece
 		return false;
 	}
 	
@@ -714,48 +640,22 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveHorizontally_Right(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		// check if there are any pieces in the way when moving
 		for (int nextColumn = from.getColumn() + 1; nextColumn <= to.getColumn(); nextColumn++) 
 		{
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(to.getRow(), nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
-				
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false;
-				}
+				break;
 			}
-		}
+		} 
 		
 		// if there is an invalid move along the way, will come here
 		return false;
@@ -766,46 +666,21 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 * if moving horizontally left is a valid chess move
 	 */
 	private boolean canMoveHorizontally_Left(Coordinate from, Coordinate to, Board b)
-	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-		
+	{	
 		// checking to make sure no pieces are in the way when moving horizontally
 		for (int nextColumn = from.getColumn() - 1; nextColumn >= to.getColumn(); nextColumn--) 
 		{
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(to.getRow(), nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false;
-				}
+				break;
 			}
 		}
 		
@@ -828,19 +703,26 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveHorizontally(Coordinate from, Coordinate to, Board b)
 	{
-		// verifying that it is moving horizontally
-		if (from.getRow() == to.getRow()) 
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		// first check the piece at the destination to see if the move
+		// will be valid upon reaching the destination
+		if (checkForPieceAtDestination(to, b, movingPieceColor))
 		{
-			// piece is attempting to move right horizontally
-			if (from.getColumn() < to.getColumn()) 
+			// verifying that it is moving horizontally
+			if (from.getRow() == to.getRow()) 
 			{
-				return canMoveHorizontally_Right(from, to, b);
-			}
-			
-			// piece is attempting to move left horizontally
-			else 
-			{
-				return canMoveHorizontally_Left(from, to, b);
+				// piece is attempting to move right horizontally
+				if (from.getColumn() < to.getColumn()) 
+				{
+					return canMoveHorizontally_Right(from, to, b);
+				}
+				
+				// piece is attempting to move left horizontally
+				else 
+				{
+					return canMoveHorizontally_Left(from, to, b);
+				}
 			}
 		}
 		
@@ -866,8 +748,6 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally_UpRight(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		int nextRow = from.getRow() + 1;
 		int nextColumn = from.getColumn() + 1;
 
@@ -878,36 +758,14 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false;
-				}
+				break;
 			}
 			
 			nextRow++;
@@ -925,8 +783,6 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDigonally_UpLeft(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		int nextRow = from.getRow() + 1;
 		int nextColumn = from.getColumn() - 1;
 
@@ -937,36 +793,14 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false; 
-				}
+				break;
 			}
 			nextRow++;
 			nextColumn--;
@@ -1014,8 +848,6 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally_DownRight(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		int nextRow = from.getRow() - 1;
 		int nextColumn = from.getColumn() + 1;
 
@@ -1026,36 +858,14 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false;
-				}
+				break;
 			}
 			nextRow--;
 			nextColumn++;
@@ -1064,7 +874,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		// if an invalid move was dected, comes to here
 		return false;
 	}
-
+ 
 	/**
 	 * see canMoveDiagonally_UpRight function. Same functionality, except this one checks for
 	 * if moving diagonally down left is a valid chess move and is called by the
@@ -1072,8 +882,6 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally_DownLeft(Coordinate from, Coordinate to, Board b)
 	{
-		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
-
 		int nextRow = from.getRow() - 1;
 		int nextColumn = from.getColumn() - 1;
  
@@ -1084,37 +892,14 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, nextColumn);
 
 			// check if there is a piece in the way (no jumping over)
-			if (b.getPieceAt(nextCoordinate) == null) 
+			if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
 			{
-				// got to the desired location and there is no piece at the coordinate
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					return true;
-				}
+				return true;
 			}
-
-			// there is a piece in the way
-			else 
+			
+			else if (b.getPieceAt(nextCoordinate) != null)
 			{
-				// check if next move will be the desired location and see if I can
-				// remove an opponent piece
-				if (nextRow == to.getRow() && nextColumn == to.getColumn()) 
-				{
-					PlayerColor nextPieceColor = ((ChessPieceDescriptor) b.getPieceAt(to).getDescriptor()).getColor();
-
-					// found an oponent piece at the desired location
-					if (!movingPieceColor.equals(nextPieceColor)) 
-					{
-						return true;
-					}
-				}
-				
-				// no jumping allowed
-				else
-				{
-					return false;
-				}
-				
+				break;
 			}
 			nextRow--;
 			nextColumn--;
@@ -1159,24 +944,32 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	 */
 	private boolean canMoveDiagonally(Coordinate from, Coordinate to, Board b)
 	{
-		if (from.getColumnDistance(to) == from.getRowDistance(to))
+		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
+		
+		// first check the piece at the destination to see if the move
+		// will be valid upon reaching the destination
+		if (checkForPieceAtDestination(to, b, movingPieceColor))
 		{
-			if (from.getRow() < to.getRow()) 
+			if (from.getColumnDistance(to) == from.getRowDistance(to))
 			{
-				return canMoveDiagonally_Up(from, to, b);
+				if (from.getRow() < to.getRow()) 
+				{
+					return canMoveDiagonally_Up(from, to, b);
+				}
+				
+				else
+				{
+					return canMoveDiagonally_Down(from, to, b);
+				} 
 			}
 			
-			else
+			else 
 			{
-				return canMoveDiagonally_Down(from, to, b);
-			} 
+				return false; 
+			}
 		}
 		
-		else 
-		{
-			return false; 
-		}
-		
+		return false;
 	}
 
 	/**
@@ -1186,7 +979,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 		return hasMoved;
 	}
-
+ 
 	/**
 	 * Once it moves, you can't change it.
 	 * 

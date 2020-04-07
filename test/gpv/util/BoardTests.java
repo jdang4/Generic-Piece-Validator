@@ -15,7 +15,7 @@ package gpv.util;
 import static gpv.chess.ChessPieceDescriptor.*;
 import static gpv.util.Coordinate.makeCoordinate;
 import static gpv.util.SquareInitializer.makeSquareInitializer;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import java.util.*;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
@@ -73,5 +73,17 @@ class BoardTests
 		}
 		
 		return initializers;
+	}
+	
+	@Test
+	void coordinateInBoard()
+	{
+		assertTrue(theBoard.insideBoard(makeCoordinate(2, 4)));
+	}
+	
+	@Test
+	void coordinateNotInBoard()
+	{
+		assertFalse(theBoard.insideBoard(makeCoordinate(0, 0)));
 	}
 }
