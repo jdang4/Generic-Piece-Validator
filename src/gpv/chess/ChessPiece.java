@@ -59,7 +59,20 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 		return descriptor.getName();
 	}
-
+	
+	/**
+	 * This method is called to check to see if there is a piece at the destination coordinate. If so,
+	 * it checks to see the color of that piece, which would determine if the piece's movement is valid
+	 * 
+	 * @param to
+	 *            the destination coordinate that the piece is moving to
+	 * @param b
+	 *            signfies the board that the piece is moving on
+	 * @param movingColor
+	 * 			  signifies the moving piece's color
+	 * @return whether the piece can move in its desired direction
+	 * 			true -> a valid move; false -> not a valid move
+	 */
 	private boolean checkForPieceAtDestination(Coordinate to, Board b, PlayerColor movingColor)
 	{
 		if (b.getPieceAt(to) != null) 
@@ -139,7 +152,8 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		if (from.getRowDistance(to) == 1)
 		{
 			// making a vertical move
-			if (from.getColumnDistance(to) == 0) {
+			if (from.getColumnDistance(to) == 0) 
+			{
 				
 				// verifying that there are no pieces at the 
 				// destination
@@ -297,7 +311,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 							return startIndex > endIndex;
 						};
 					}
-					
+					 
 					// loop until get to rook coordinate and check if no pieces in the way
 					while (stillSpacesLeft.test(startColumnIndex, rookCoordinate.getColumn()))
 					{
@@ -324,7 +338,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	}
 
-	// can move one space at a time in any direction
+	// the check test for a king's movement
 	private ChessPieceValidator king = (from, to, b) -> 
 	{
 		// checking if trying to make a castling move
@@ -359,19 +373,19 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		
 	};
  
-	// checking if the move is valid for a qeen
+	// the check tests for a queen's movements
 	private ChessPieceValidator queen = (from, to, b) -> 
 	{
 		return checkAllThreeDirections(from, to, b);
 	};
 
-	// checking if the move is valid for a bishop
+	// the check tests for a bishop's movements
 	private ChessPieceValidator bishop = (from, to, b) ->
 	{
 		return canMoveDiagonally(from, to, b);
 	};
 	
-	// checking if the move is valid for a knight
+	// the check tests for a knight's movements
 	private ChessPieceValidator knight = (from, to, b) ->
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
@@ -399,7 +413,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	};
 
-	// checking if the move is valid for a rook
+	// the check tests for a rook's movements
 	private ChessPieceValidator rook = (from, to, b) -> 
 	{
 		// rook is attempting to move vertically so check vertical move
@@ -417,7 +431,7 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		return false;
 	};  
 
-	// checks if the move is valid for a pawn
+	// the check tests for a pawn's movements
 	private ChessPieceValidator pawn = (from, to, b) ->
 	{
 		PlayerColor movingPieceColor = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getColor();
@@ -471,16 +485,17 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 	{
 
 		// checking if where I want to move is a valid position within the board
-		if ( (!b.insideBoard(to)) || (from.equals(to)) 
+		if ( (!b.insideBoard(to)) || (!b.insideBoard(from)) || (from.equals(to)) 
 			|| (b.getPieceAt(from) == null)) 
 		{
 			return false;
 		}
-		 
+		  
 		PieceName movingPieceType = ((ChessPieceDescriptor) b.getPieceAt(from).getDescriptor()).getName();
 
 		boolean result = false;
-
+		
+		// handling the checking for a particular piece
 		switch (movingPieceType) {
 			case KING:
 				result = king.check(from, to, b);
@@ -536,8 +551,8 @@ public class ChessPiece implements Piece<ChessPieceDescriptor>
 		// check for pieces that may be in the way
 		for (int nextRow = from.getRow() + 1; nextRow <= to.getRow(); nextRow++) 
 		{
-			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
 			// check if there is a piece in the way (no jumping over)
+			Coordinate nextCoordinate = Coordinate.makeCoordinate(nextRow, to.getColumn());
 			
 			if (nextRow == to.getRow()) 
 			{

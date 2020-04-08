@@ -75,13 +75,13 @@ class BoardTests
 		return initializers;
 	}
 	
-	@Test
+	@Test // 5
 	void coordinateInBoard()
 	{
 		assertTrue(theBoard.insideBoard(makeCoordinate(2, 4)));
 	}
 	
-	@Test
+	@Test // 6
 	void coordinateNotInBoard()
 	{
 		assertFalse(theBoard.insideBoard(makeCoordinate(0, 0)));

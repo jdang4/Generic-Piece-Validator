@@ -57,6 +57,7 @@ public class Coordinate extends Point
 	
 	/**
 	 * Gets the absolute row distance between two coordinates
+	 * 
 	 * @param c 
 	 * 			the coordinate to get the distance to from the calling coordinate
 	 * @return the integer value of the row distance
@@ -68,6 +69,7 @@ public class Coordinate extends Point
 	
 	/**
 	 * Gets the absolute column distance between two coordinates
+	 * 
 	 * @param c 
 	 * 			the coordinate to get the distance to from the calling coordinate
 	 * @return the integer value of the column distance

@@ -104,12 +104,10 @@ public class Board
 	 * coordinate to the destination coordinate is a valid move. It determines if the
 	 * given coordinate is inside the board.
 	 * 
-	 * @param coord
-	 *            - the position to check if it is inside the board
-	 * @param b
-	 *            - signfies the board that the coordinate is referring to
-	 * @return whether the coordinate is a valid coordinate within the board: true -> a
-	 *         valid coordinate, false -> not a valid coordinate
+	 * @param c
+	 *            the position to check if it is inside the board
+	 * @return whether the coordinate is a valid coordinate within the board: 
+	 * 			true -> a valid coordinate, false -> not a valid coordinate
 	 */
 	public boolean insideBoard(Coordinate c) 
 	{

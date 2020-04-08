@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class CoordinateTests
 {
 
-	@Test
+	@Test // 1
 	void getTheRowDistanceOfDifferentRows()
 	{
 		Coordinate source = Coordinate.makeCoordinate(1, 6);
@@ -31,7 +31,7 @@ class CoordinateTests
 		assertEquals(3, source.getRowDistance(destination));
 	}
 	
-	@Test
+	@Test // 2
 	void getTheRowDistanceOfSameRow()
 	{
 		Coordinate source = Coordinate.makeCoordinate(1, 6);
@@ -40,7 +40,7 @@ class CoordinateTests
 		assertEquals(0, source.getRowDistance(destination));
 	}
 	
-	@Test
+	@Test //3
 	void getTheColumnDistanceOfDifferentColumns()
 	{
 		Coordinate source = Coordinate.makeCoordinate(1, 4);
@@ -49,7 +49,7 @@ class CoordinateTests
 		assertEquals(2, source.getColumnDistance(destination));
 	}
 	
-	@Test
+	@Test //4
 	void getTheColumnDistanceOfSameColumns()
 	{
 		Coordinate source = Coordinate.makeCoordinate(4, 6);
