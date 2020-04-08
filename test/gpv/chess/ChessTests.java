@@ -1147,7 +1147,7 @@ class ChessTests
         		
         		// king makes just a standard king move, not a castling move
         		Arguments.of(
-        				makeInitializers(WHITEKING, 1, 5, WHITEROOK, 1, 7),
+        				makeInitializers(WHITEKING, 1, 5, WHITEROOK, 1, 8),
         				false, true, makeCoordinate(1, 6), true),
         		
         		// an enemy piece is in the way
