@@ -1,0 +1,176 @@
+TDD TODO LIST
+Jonathan Dang
+2020 D-term
+Generic Piece Validator
+
+Coordinate Tests
+================
+TESTING ROW DISTANCE
+1. COORDINATE(1, 6) -> (4, 6) = 3
+2. COORDINATE(1, 6) -> (1, 8) = 0
+
+TESTING COLUMN DISTANCE
+3. COORDINATE(1, 4) -> (1, 6) = 2
+4. COORDINATE(4, 6) -> (1, 6) = 0
+
+
+Board Tests
+==================================
+TESTING insideBoard() 
+5. COORDINATE(2, 4) = true
+6. COORDINATE(0, 0) = false
+
+
+Chess Moves Tests
+==================================
+TESTING KING BASIC MOVEMENTS
+7. WK (1, 5) -> (2, 5) = true
+8. WK (1, 5) -> (3, 5) = false
+9. WK (2, 5) -> (1, 5) = true
+10. BK (8, 5) -> (8, 6) = true
+11. WK (1, 5) -> (1, 4) = true
+12. BK (8, 5) -> (7, 4) = true
+13. WK (1, 5) -> (2, 4) = true
+14. WK (2, 5) -> (1, 6) = true
+15. WK (2, 5) -> (1, 4) = true
+16. BK (7, 5) -> (8, 7) = false
+
+TESTING KING CAPTURING ENEMY
+17. WK (2, 5) -> (1, 5) BK on (1, 5) = true
+18. WK (1, 5) -> (2, 5) BK on (2, 5) = true
+19. WK (1, 5) -> (1, 6) BK on (1, 6) = true
+20. WK (1, 5) -> (1, 4) BK on (1, 4) = true
+21. WK (1, 5) -> (2, 6) BK on (2, 6) = true
+22. WK (1, 5) -> (2, 4) BK on (2, 4) = true
+23. WK (2, 5) -> (1, 6) BK on (1, 6) = true
+24. WK (2, 5) -> (1, 4) BK on (1, 4) = true
+
+TESTING KING CAPTURING SAME COLOR
+25. WK (2, 1) -> (1, 1) WR on (1, 1) = false
+26. WK (1, 1) -> (2, 1) WR on (2, 1) = false
+27. WK (1, 5) -> (1, 6) WB on (1, 6) = false
+28. WK (1, 5) -> (1, 4) WQ on (1, 4) = false
+29. WK (1, 5) -> (2, 6) WP on (2, 6) = false
+30. WK (1, 5) -> (2, 4) WP on (2, 4) = false
+31. WK (2, 5) -> (1, 6) WB on (1, 6) = false
+32. WK (2, 5) -> (1, 4) WQ on (1, 4) = false
+
+TESTING QUEEN BASIC MOVEMENTS
+33. WQ (1, 4) -> (1, 4) = true
+34. WQ (1, 4) -> (1, 7) = true
+35. WQ (1, 4) -> (3, 6) = true
+36. WQ (1, 4) -> (3, 5) = false
+37. WQ (1, 4) -> (3, 4) WP on (2, 4) = false
+38. WQ (3, 4) -> (1, 4) WP on (2, 4) = false
+39. WQ (1, 4) -> (1, 7) WB on (1, 6) = false
+40. WQ (1, 4) -> (1, 2) WB on (1, 3) = false
+41. WQ (1, 4) -> (3, 6) WP on (2, 5) = false
+42. WQ (1, 4) -> (2, 3) WP on (3, 2) = false
+43. WQ (3, 2) -> (2, 3) WP on (1, 4) = false
+44. WQ (3, 6) -> (1, 4) WP on (2, 5) = false
+
+TESTING QUEEN CAPTURING ENEMY
+45. WQ (1, 4) -> (2, 4) BP on (2, 4) = true
+46. WQ (1, 4) -> (1, 3) BK on (1, 3) = true
+47. WQ (3, 4) -> (1, 2) BK on (1, 2) = true
+
+TESTING QUEEN CAPTURING SAME COLOR
+48. WQ (1, 4) -> (2, 4) WP on (2, 4) = false
+49. WQ (1, 4) -> (1, 5) WK on (1, 5) = false
+50. WQ (4, 7) -> (2, 5) WP on (2, 5) = false 
+
+TESTING BISHOP BASIC MOVEMENTS
+51. WB (1, 3) -> (3, 5) = true
+52. WB (1, 6) -> (4, 3) = true
+53. WB (4, 3) -> (1, 6) = true
+54. WB (3, 5) -> (1, 3) = true
+55. WB (1, 6) -> (2, 6) = false
+56. WB (1, 3) -> (3, 5) WP on (2, 4) = false
+
+TESTING BISHOP CAPTURING ENEMY
+57. WB (1, 6) -> (4, 3) BP on (4, 3) = true
+
+TESTING BISHOP CAPTURING SAME COLOR
+58. WB (1, 6) -> (4, 3) WP on (4, 3) = false 
+
+TESTING ROOK BASIC MOVEMENTS
+59. WR (1, 1) -> (5, 1) = true
+60. WR (5, 1) -> (1, 1) = true
+61. WR (1, 1) -> (1, 5) = true
+62. WR (1, 8) -> (1, 5) = true
+63. WR (1, 8) -> (2, 7) = false
+64. WR (1,8) -> (1, 2) WK on (1, 5) = false
+
+TESTING ROOK CAPTURING ENEMY
+65. WR (1, 1) -> (5, 1) BP on (5, 1) = true
+66. WR (2, 1) -> (2, 5) BP on (2, 5) = true
+
+TESTING ROOK CAPTURING SAME COLOR
+67. WR (1, 1) -> (5, 1) WP on (5, 1) = false
+68. WR (2, 1) -> (2, 5) WP on (2, 5) = false
+
+TESTING KNIGHT BASIC MOVEMENTS
+69. WKN (1, 2) -> (3, 3) = true
+70. WKN (1, 2) -> (3, 1) = true
+71. WKN (3, 3) -> (1, 4) = true
+72. WKN (3, 3) -> (1, 2) = true
+73. WKN (1, 2) -> (2, 4) = true
+74. WKN (3, 3) -> (2, 5) = true
+75. WKN (3, 3) -> (4, 1) = true
+76. WKN (3, 3) -> (2, 1) = true
+77. WKN (1, 2) -> (3, 4) = false
+78. WKN (3, 3) -> (2, 1) BB on (1, 3) = true
+
+TESTING KNIGHT CAPTURING ENEMY
+79. WKN (1, 2) -> (3, 3) BP on (3, 3) = true
+80. WKN (3, 3) -> (2, 1) BP on (2, 1) = true
+
+TESTING KNIGHT CAPTURING SAME COLOR
+81. WKN (1, 2) -> (3, 3) WP on (3, 3) = false
+82. WKN (3, 3) -> (2, 1) WP on (2, 1) = false
+
+TESTING PAWN BASIC MOVEMENTS
+83. WP (2, 5) -> (3, 5) = true
+84. WP (2, 5) -> (4, 6) = false
+85. WP (2, 5) -> (4, 5) WP FIRST MOVE = true
+86. WP (3, 5) -> (5, 5) WP NON FIRST MOVE = false 
+87. BP (7, 5) -> (6, 5) = true
+88. BP (7, 5) -> (5, 4) = false
+89. BP (7, 5) -> (5, 5) BP FIRST MOVE = true
+90. BP (6, 5) -> (4, 5) BP NON FIRST MOVE = false 
+
+TESTING PAWN CAPTURING ENEMY
+91. WP (3, 5) -> (4, 5) BP on (4, 5) = false
+92. WP (3, 5) -> (4, 6) BP on (4, 6) = true
+93. WP (3, 5) -> (4, 4) BP on (4, 4) = true
+94. WP (5, 5) -> (4, 3) BP on (4, 3) = false
+95. BP (6, 5) -> (5, 5) WP on (5, 5) = false
+96. BP (6, 5) -> (5, 4) WP on (5, 4) = true
+97. BP (6, 5) -> (5, 6) WP on (5, 6) = true
+98. BP (5, 5) -> (6, 6) WP on (6, 6) = false
+
+TESTING PAWN CAPTURING SAME COLOR
+99. WP (3, 4) -> (4, 3) WQ on (4, 3) = false
+100. BP (6, 4) -> (5, 5) BQ on (5, 5) = false 
+
+TESTING CASTLING
+101. WK (1, 5) -> (1, 7) WR on (1, 8) WK & WR not moved = true
+102. WK (1, 5) -> (1, 3) WR on (1, 1) WK & WR not moved = true
+103. BK (8, 5) -> (8, 7) BR on (8, 8) BK & BR not moved = true
+104. BK (8, 5) -> (8, 3) BR on (8, 1) BK & BR not moved = true
+105. BK (8, 5) -> (8, 2) BR on (8, 1) BK & BR not moved = false 
+106. BK (8, 5) -> (6, 3) BR on (8, 1) BK & BR not moved = false
+107. WK (1, 5) -> (1, 7) WR on (1, 8) WK has moved = false
+108. WK (1, 5) -> (1, 7) WR on (1, 8) WR has moved = true
+109. WK (1, 5) -> (1, 6) WR on (1, 8) WK & WR not moved =  false
+110. WK (1, 5) -> (1, 3) WR on (1, 1) BKN on (1, 2) WK & WR not moved = false
+111. WK (1, 5) -> (1, 3) WR on (1, 8) WB on (1, 6) WK & WR not moved = false 
+
+TESTING BLACK COLOR PIECE - (JUST FOR VERIFICATION)
+112. BK (8, 5) -> (7, 5) BP on (7, 5) = false
+113. BK (8, 5) -> (7, 6) = true
+114. BQ (8, 4) -> (5, 1) BP on (7, 3) = false  
+115. BB (8, 3) -> (3, 8) = true
+116. BB (8, 3) -> (3, 8) BP on (6, 5) = false
+117. BKN (8, 2) -> (5, 3) BP on (7, 2) = false
+118. BKN (8, 2) -> (6, 3) BP on (7, 2) = true
