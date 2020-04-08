@@ -28,7 +28,9 @@ import org.junit.jupiter.params.provider.*;
 import gpv.util.*;
 
 /**
- * Description
+ * This is test class that is mainly used to test my code 
+ * and verify that it works correctly as I expect it to.
+ * It runs on JUnit 5
  * @version Apr 3, 2020
  */
 class ChessTests
