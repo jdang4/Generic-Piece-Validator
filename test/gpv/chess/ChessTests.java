@@ -1078,7 +1078,7 @@ class ChessTests
      * When castling, the initializers are the king first, rook second,
      * and others follow, if they are in play.
      */
-    @ParameterizedTest //101 - 112
+    @ParameterizedTest //101 - 111
     @MethodSource("castlingTestProvider")
     void castlingTest(List<SquareInitializer> initializers, boolean kingMoved,
         boolean rookMoved, Coordinate to, boolean expected)
@@ -1158,12 +1158,7 @@ class ChessTests
         		Arguments.of(
         				makeInitializers(WHITEKING, 1, 5, WHITEROOK, 1, 8,
         						WHITEBISHOP, 1, 6),
-        				false, false, makeCoordinate(1, 7), false),
-        		
-        		// rook at wrong location
-        		Arguments.of(
-        				makeInitializers(BLACKKING, 8, 5, BLACKROOK, 8, 1),
-        				false, false, makeCoordinate(8, 7), false)
+        				false, false, makeCoordinate(1, 7), false)
         );
     }
 
@@ -1176,7 +1171,7 @@ class ChessTests
 	 * @param to move to this coordinate
 	 * @param expected the expected result calling canMove() on the piece at "from"
 	 */
-    @ParameterizedTest // 113 - 119
+    @ParameterizedTest // 112 - 118
     @MethodSource("moveTestProvider")
     void testingBlackColorPieces(List<SquareInitializer> initializers, Coordinate from,
             Coordinate to, boolean expected)
